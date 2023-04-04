@@ -4,7 +4,7 @@
     /// Calculates the n-th Fibonacci number recursively using the classic approach.
     /// </summary>
     /// <param name="n">The index of the Fibonacci number to calculate.</param>
-    /// <param name="steps">A reference to an integer that will store the number of addition operations performed.</param>
+    /// <param name="steps">A reference to an integer that will store the number of operations performed.</param>
     /// <returns>The n-th Fibonacci number.</returns>
     public static int FibRecursive(int n, ref int steps)
     {
@@ -24,7 +24,7 @@
     /// Calculates the n-th Fibonacci number iteratively using a for loop.
     /// </summary>
     /// <param name="n">The index of the Fibonacci number to calculate.</param>
-    /// <param name="steps">A reference to an integer that will store the number of addition operations performed.</param>
+    /// <param name="steps">A reference to an integer that will store the number of operations performed.</param>
     /// <returns>The n-th Fibonacci number.</returns>
     public static int FibIterative(int n, ref int steps)
     {
@@ -49,7 +49,7 @@
     /// Calculates the n-th Fibonacci number recursively using an accumulation approach.
     /// </summary>
     /// <param name="n">The index of the Fibonacci number to calculate.</param>
-    /// <param name="steps">A reference to an integer that will store the number of addition operations performed.</param>
+    /// <param name="steps">A reference to an integer that will store the number of operations performed.</param>
     /// <param name="a">The accumulator for the previous Fibonacci number.</param>
     /// <param name="b">The accumulator for the current Fibonacci number.</param>
     /// <returns>The n-th Fibonacci number.</returns>
@@ -70,14 +70,13 @@ class Program
 {
     /// <summary>
     /// The main entry point of the program. Prompts the user for positive integers and calculates the corresponding
-    /// Fibonacci numbers using different methods, displaying the number of addition operations performed for each method.
+    /// Fibonacci numbers using different methods, displaying the number of operations performed for each method.
     /// </summary>
     /// <param name="args">The command line arguments (not used).</param>
     static void Main(string[] args)
     {
         List<int> numbers = new List<int>();
         int userInput;
-
         do
         {
             Console.Write("Enter a positive integer or -1 to run: ");
