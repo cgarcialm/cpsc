@@ -9,11 +9,10 @@
         /// Calculates the n-th Fibonacci number recursively using the classic approach.
         /// </summary>
         /// <param name="n">The index of the Fibonacci number to calculate.</param>
-        /// <param name="steps">A reference to a counter of the number of addition operations.</param>
+        /// <param name="addOps">A reference to a counter of the number of addition operations.</param>
         /// <returns>The n-th Fibonacci number.</returns>
-        public static int FibRecursive(int n, ref int steps)
+        public static int FibRecursive(int n, ref int addOps)
         {
-            steps++;
             switch (n)
             {
                 case 0:
@@ -21,7 +20,8 @@
                 case 1:
                     return 1;
                 default:
-                    return FibRecursive(n - 1, ref steps) + FibRecursive(n - 2, ref steps);
+                    addOps++;
+                    return FibRecursive(n - 1, ref addOps) + FibRecursive(n - 2, ref addOps);
             }
         }
 
@@ -29,19 +29,18 @@
         /// Calculates the n-th Fibonacci number iteratively using a for loop.
         /// </summary>
         /// <param name="n">The index of the Fibonacci number to calculate.</param>
-        /// <param name="steps">A reference to a counter of the number of addition operations.</param>
+        /// <param name="addOps">A reference to a counter of the number of addition operations.</param>
         /// <returns>The n-th Fibonacci number.</returns>
-        public static int FibIterative(int n, ref int steps)
+        public static int FibIterative(int n, ref int addOps)
         {
             if (n == 0 || n == 1)
             {
-                steps++;
                 return n;
             }
             int a = 0, b = 1, res = 1;
             for (int i = 2; i <= n; i++)
             {
-                steps++;
+                addOps++;
                 res = a + b;
                 a = b;
                 b = res;
@@ -54,24 +53,24 @@
         /// Calculates the n-th Fibonacci number recursively using an accumulation approach.
         /// </summary>
         /// <param name="n">The index of the Fibonacci number to calculate.</param>
-        /// <param name="steps">A reference to a counter of the number of addition operations.</param>
+        /// <param name="addOps">A reference to a counter of the number of addition operations.</param>
         /// <param name="a">The accumulator for the previous Fibonacci number.</param>
         /// <param name="b">The accumulator for the current Fibonacci number.</param>
         /// <returns>The n-th Fibonacci number.</returns>
-        public static int FibRecursiveAccum(int n, ref int steps, int a = 0, int b = 1)
+        public static int FibRecursiveAccum(int n, ref int addOps, int a = 0, int b = 1)
         {
-            steps++;
             switch (n)
             {
                 case 0:
                     return a;
                 default:
-                    return FibRecursiveAccum(n - 1, ref steps, b, a + b);
+                    addOps++;
+                    return FibRecursiveAccum(n - 1, ref addOps, b, a + b);
             }
         }
     }
     /// <summary>
-    /// Program provides an interface to executre Fibonacci techniques for values that the user inputs using the console.
+    /// Program provides an interface to execute and compare Fibonacci techniques for values that the user inputs using the console.
     /// </summary>
     class Program
     {
@@ -81,7 +80,7 @@
             do
             {
                 Console.Write("Enter a positive integer or -1 to run: ");
-                while (!Int32.TryParse(Console.ReadLine(), out userInput) || userInput < -1)
+                while (!int.TryParse(Console.ReadLine(), out userInput) || userInput < -1)
                 {
                     Console.Write("Invalid input. Please enter a positive integer or -1: ");
                 }
@@ -101,17 +100,17 @@
             Console.WriteLine(String.Format(linePattern, "n", "fib(n)", "Classic Recursive", "Iterative", "Recursive w/ Accum"));
             foreach (int num in numbers)
             {
-                int stepsR = 0, stepsI = 0, stepsRA = 0;
-                int fibR = Fibonacci.FibRecursive(num, ref stepsR);
-                int fibI = Fibonacci.FibIterative(num, ref stepsI);
-                int fibRA = Fibonacci.FibRecursiveAccum(num, ref stepsRA);
+                int addOpsR = 0, addOpsI = 0, addOpsRA = 0;
+                int fibR = Fibonacci.FibRecursive(num, ref addOpsR);
+                int fibI = Fibonacci.FibIterative(num, ref addOpsI);
+                int fibRA = Fibonacci.FibRecursiveAccum(num, ref addOpsRA);
 
                 if (fibR != fibI || fibR != fibRA)
                 {
                     Console.WriteLine("There was an error in the calculation of Fibonacci for " + num + ".");
                     break;
                 }
-                Console.WriteLine(String.Format(linePattern, num, fibR, stepsR, stepsI, stepsRA));
+                Console.WriteLine(String.Format(linePattern, num, fibR, addOpsR, addOpsI, addOpsRA));
             }
         }
 
