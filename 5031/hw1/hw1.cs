@@ -81,12 +81,12 @@
             do
             {
                 Console.Write("Enter a positive integer or -1 to run: ");
-                while (!Int32.TryParse(Console.ReadLine(), out userInput) || userInput < -1 || userInput == 0) // TODO: Add Int32 validation
+                while (!Int32.TryParse(Console.ReadLine(), out userInput) || userInput < -1)
                 {
                     Console.Write("Invalid input. Please enter a positive integer or -1: ");
                 }
 
-                if (userInput > 0)
+                if (userInput != -1)
                 {
                     numbers.Add(userInput);
                 }
