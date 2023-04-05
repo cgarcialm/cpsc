@@ -96,7 +96,7 @@
 
         static void PrintFibResults(List<int> numbers) {
             Console.WriteLine("Number of addition operations in… ");
-            var linePattern = "|{0,10}|{1,10}|{2,20}|{3,20}|{4,20}|";
+            var linePattern = "|{0,8}|{1,8}|{2,18}|{3,18}|{4,18}|";
             Console.WriteLine(String.Format(linePattern, "n", "fib(n)", "Classic Recursive", "Iterative", "Recursive w/ Accum"));
             foreach (int num in numbers)
             {
@@ -122,19 +122,17 @@
         static void Main(string[] args)
         {
             Console.WriteLine("Welcome to Fibonacci Sequence Technique Comparator.");
-            bool runFib = true;
-            string? answer;
+            string? runFib = "y";
             do {
                 List<int> numbers = PromptUserInput();
                 PrintFibResults(numbers);
                 
                 Console.Write("\nDo you want to calculate and compare more Fibonaccis? y/n: ");
-                answer = Console.ReadLine();
-                while (answer != "y" && answer != "n") {
+                runFib = Console.ReadLine();
+                while (runFib != "y" && runFib != "n") {
                     Console.Write("\nInvalid input. Please enter \"y\" or \"n\": ");
                 }
-                runFib = answer == "y";
-            } while (runFib);
+            } while (runFib == "y");
             Console.WriteLine("Goodbye!");
         }
     }
