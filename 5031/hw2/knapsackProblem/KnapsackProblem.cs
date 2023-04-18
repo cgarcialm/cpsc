@@ -12,7 +12,8 @@ using System.Collections.Generic;
 /// Knapsack class implements an object that can hold Items which weight is the weight of all its Items and the value is the value of all its Items.
 /// It has a limit for the total weight that is given by its maximum weight.
 /// </summary>
-class Knapsack {
+class Knapsack
+{
     public int maxWeight;
     private int weight = 0;
     private int value = 0;
@@ -32,8 +33,10 @@ class Knapsack {
     /// Getter of the weight of the knapsack. If weight is greater than the limit, returns -1.
     /// </summary>
     /// <returns></returns>
-    public int getWeight() {
-        if(weight <= maxWeight) {
+    public int getWeight()
+    {
+        if (weight <= maxWeight)
+        {
             return weight;
         }
         return -1;
@@ -43,21 +46,26 @@ class Knapsack {
     /// Getter of the value of the knapsack. If weight is greater than the limit, returns -1.
     /// </summary>
     /// <returns></returns>
-    public int getValue() {
-        if(weight <= maxWeight) {
+    public int getValue()
+    {
+        if (weight <= maxWeight)
+        {
             return value;
         }
         return -1;
     }
-    
+
     /// <summary>
     /// Adds an Item to the knapsack.
     /// </summary>
     /// <param name="item">The Item to add</param>
-    public void addItem(Item item) {
-    
-        for(int i = 0; i < items.Count; i++) {
-            if(items[i].id == item.id) {
+    public void addItem(Item item)
+    {
+
+        for (int i = 0; i < items.Count; i++)
+        {
+            if (items[i].id == item.id)
+            {
                 throw new Exception(String.Format("There is already an Item with id {0}", item.id));
             }
         }
@@ -72,9 +80,11 @@ class Knapsack {
     /// Creates a string that represents the Items that are in the knapsack.
     /// </summary>
     /// <returns></returns>
-    public string getKnapsackItemList() {
+    public string getKnapsackItemList()
+    {
         string s = "{";
-        foreach(Item i in items) {
+        foreach (Item i in items)
+        {
             s += i.id + ",";
         }
         s += "}";
@@ -85,22 +95,27 @@ class Knapsack {
     /// Creates a string that represents the knapsack: list of items, weight and value.
     /// </summary>
     /// <returns></returns>
-    public string toString() {
+    public string toString()
+    {
         const string linePattern = "|{0,20}|{1,20}|{2,20}|";
-        if(weight <= maxWeight) {
+        if (weight <= maxWeight)
+        {
             return String.Format(linePattern, string.Format("{0}", getKnapsackItemList()), weight, value);
         }
         return String.Format(linePattern, string.Format("{0}", getKnapsackItemList()), weight, "not feasible");
-    }  
+    }
 
     /// <summary>
     /// Drops an item with the given id from the knapsack.
     /// </summary>
     /// <param name="id">Id of the item to drop</param>
     /// <returns></returns>
-    public Knapsack dropItem(int id) {
-        for(int i = 0; i < items.Count; i++) {
-            if(items[i].id == id) {
+    public Knapsack dropItem(int id)
+    {
+        for (int i = 0; i < items.Count; i++)
+        {
+            if (items[i].id == id)
+            {
                 Item itemToRemove = items[i];
                 weight -= itemToRemove.weight;
                 value -= itemToRemove.value;
@@ -115,7 +130,8 @@ class Knapsack {
 /// <summary>
 /// Item class implements an object that has an id, a weight and a value.
 /// </summary>
-class Item {
+class Item
+{
     public int id;
     public int weight;
     public int value;
@@ -150,22 +166,24 @@ class KnapsackProblem
     /// <param name="items">A list of items to potentially add to the knapsack</param>
     /// <param name="maxValue">The current maximum value for the given state of the knapsack</param>
     /// <returns></returns>
-    static int solveKnapsackBruteForceRecursive(Knapsack knapsack, List<Item> items, int maxValue) {
+    static int solveKnapsackBruteForceRecursive(Knapsack knapsack, List<Item> items, int maxValue)
+    {
         int newMaxValue = 0;
 
-        if(items.Count > 0) {
+        if (items.Count > 0)
+        {
             // include
             knapsack.addItem(items[0]);
             Console.WriteLine(knapsack.toString());
-            int maxValueInclude = Math.Max(knapsack.getValue(), solveKnapsackBruteForceRecursive(knapsack, items.GetRange(1, items.Count-1), maxValue));
-            
+            int maxValueInclude = Math.Max(knapsack.getValue(), solveKnapsackBruteForceRecursive(knapsack, items.GetRange(1, items.Count - 1), maxValue));
+
             // don't include
-            int maxValueNotInclude = solveKnapsackBruteForceRecursive(knapsack.dropItem(items[0].id), items.GetRange(1, items.Count-1), maxValue);
+            int maxValueNotInclude = solveKnapsackBruteForceRecursive(knapsack.dropItem(items[0].id), items.GetRange(1, items.Count - 1), maxValue);
 
             // update new max value
             newMaxValue = Math.Max(maxValueInclude, maxValueNotInclude);
         }
-        
+
         return Math.Max(maxValue, newMaxValue);
     }
 
@@ -175,7 +193,8 @@ class KnapsackProblem
     /// <param name="knapsack">An empty knapsack</param>
     /// <param name="items">A list of items to potentially add to the knapsack</param>
     /// <returns></returns>
-    static int solveKnapsackBruteForce(Knapsack knapsack, List<Item> items) {
+    static int solveKnapsackBruteForce(Knapsack knapsack, List<Item> items)
+    {
         Console.WriteLine(knapsack.toString());
         int maxValue = solveKnapsackBruteForceRecursive(knapsack, items, 0);
 
@@ -193,7 +212,7 @@ class KnapsackProblem
         items.Add(new Item(2, 3, 12));
         items.Add(new Item(3, 4, 40));
         items.Add(new Item(4, 5, 25));
-        
+
         Console.WriteLine("Welcome to the KnapsackProblem using Brute Force and Exhaustive Search.\n");
         const string linePattern = "|{0,20}|{1,20}|{2,20}|";
         Console.WriteLine(String.Format(linePattern, "Subset", "Total Weight", "Total Value"));
