@@ -91,7 +91,7 @@ class KnapsackProblem
     List<Item> items;
     const string linePattern = "|{0,20}|{1,20}|{2,20}|";
 
-    static int solveKnapsackBruteForce(Knapsack knapsack, List<Item> items) {
+    static int solveKnapsackBruteForceRecursive(Knapsack knapsack, List<Item> items) {
         int maxValueInclude = 0, maxValueNotInclude = 0;
 
         if(items.Count > 0) {
@@ -99,16 +99,24 @@ class KnapsackProblem
             knapsack.addItem(items[0]);
             Console.WriteLine(knapsack.toString());
             maxValueInclude = knapsack.getValue();
-            solveKnapsackBruteForce(knapsack, items.GetRange(1, items.Count-1));
+            solveKnapsackBruteForceRecursive(knapsack, items.GetRange(1, items.Count-1));
             
             // don't include
             knapsack.dropItem(items[0].id);
             maxValueNotInclude = knapsack.getValue();
-            maxValueNotInclude = solveKnapsackBruteForce(knapsack, items.GetRange(1, items.Count-1));
+            solveKnapsackBruteForceRecursive(knapsack, items.GetRange(1, items.Count-1));
         }
         
         return Math.Max(maxValueInclude, maxValueNotInclude);
     }
+
+    static int solveKnapsackBruteForce(Knapsack knapsack, List<Item> items) {
+        Console.WriteLine(knapsack.toString());
+        int maxValue = solveKnapsackBruteForceRecursive(knapsack, items);
+
+        return maxValue;
+    }
+
 
     static void Main(string[] args)
     {
