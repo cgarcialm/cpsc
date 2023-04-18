@@ -8,38 +8,47 @@ class Knapsack {
     public int weight = 0;
     public int value = 0;
     public List<Item> items = new List<Item>();
-    const string linePattern = "|{0,20}|{1,20}|{2,20}|";
+    public int nItems = 0;
 
     public Knapsack(int maxW)
     {
         maxWeight = maxW;
     }
-    public void addItem(Item item) {
+    
+    public void addItem(Item item) { // TODO: Check if id is already there throw exception
         items.Add(item);
         weight += item.weight;
-        weight += item.value;
+        value += item.value;
+        nItems++;
     }
 
     public string getKnapsackItemList() {
         string s = "{";
         foreach(Item i in items) {
-            s += i.id;
+            s += i.id + ",";
         }
         s += "}";
         return s;
     }
 
     public string toString() {
-        if(weight<=maxWeight) {
+        const string linePattern = "|{0,20}|{1,20}|{2,20}|";
+        if(weight <= maxWeight) {
             return String.Format(linePattern, string.Format("{0}", getKnapsackItemList()), weight, value);
         }
         return String.Format(linePattern, string.Format("{0}", getKnapsackItemList()), weight, "not feasible");
     }
 
-    public void empty() {
-        weight = 0;
-        value = 0;
-        items.Clear();
+    public void dropItem(int id) {
+        for(int i = 0; i < items.Count; i++) {
+            if(items[i].id == id) {
+                Item itemToRemove = items[i];
+                weight -= itemToRemove.weight;
+                value -= itemToRemove.value;
+                items.RemoveAt(i);
+                nItems--;
+            }
+        }
     }
 }
 
@@ -62,22 +71,21 @@ class KnapsackProblem
     List<Item> items;
     const string linePattern = "|{0,20}|{1,20}|{2,20}|";
 
-    static Knapsack solveKnapsackBruteForce(Knapsack knapsack, List<Item> items) {
-        if(items.Count > 0) {
-            // don't include
-            solveKnapsackBruteForce(knapsack, items.GetRange(1, items.Count-1));
+    static int solveKnapsackBruteForce(Knapsack knapsack, List<Item> items) {
+        int maxValueInclude = 0, maxValueNotInclude = 0;
 
+        if(items.Count > 0) {
             // include
             knapsack.addItem(items[0]);
             Console.WriteLine(knapsack.toString());
-            solveKnapsackBruteForce(knapsack, items.GetRange(1, items.Count-1));
-
-            if (items.Count == 1) {
-                knapsack.empty();
-            }
+            maxValueInclude = solveKnapsackBruteForce(knapsack, items.GetRange(1, items.Count-1));
+            
+            // don't include
+            knapsack.dropItem(items[0].id);
+            maxValueNotInclude = solveKnapsackBruteForce(knapsack, items.GetRange(1, items.Count-1));
         }
         
-        return knapsack;
+        return Math.Max(maxValueInclude, maxValueNotInclude);
     }
 
     static void Main(string[] args)
@@ -88,7 +96,6 @@ class KnapsackProblem
         items.Add(new Item(3, 4, 40));
         items.Add(new Item(4, 5, 25));
 
-        Console.WriteLine("Number of addition operations in… ");
         Console.WriteLine(String.Format(linePattern, "Subset", "Total Weight", "Total Value"));
         solveKnapsackBruteForce(new Knapsack(10), items);
     }
