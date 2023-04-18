@@ -1,5 +1,11 @@
 ﻿/******************************************************************************
 
+ * Author: Cecilia Garcia Lopez de Munain <cgarcialopezdemunain@seattleu.edu>
+ * Date: Apr 17
+ * Platform: MacOS Monterrey. Version 12.0.1.
+ * Version: 1.0
+ * Purpose: Implementation of KnapsackProblem program.
+
 Welcome to KnapsackProblem.
 KnapsackProblem is a program that solves a knapsack problem with Brute Force and Exhaustive Search.
 

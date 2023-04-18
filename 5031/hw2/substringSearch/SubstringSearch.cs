@@ -1,5 +1,11 @@
 ﻿/******************************************************************************
 
+ * Author: Cecilia Garcia Lopez de Munain <cgarcialopezdemunain@seattleu.edu>
+ * Date: Apr 17
+ * Platform: MacOS Monterrey. Version 12.0.1.
+ * Version: 1.0
+ * Purpose: Implementation of SubstringSearch program.
+
 Welcome to SubstringSearch.
 SubstringSearch is a program that searches for substrings within string all given by the user.
 
