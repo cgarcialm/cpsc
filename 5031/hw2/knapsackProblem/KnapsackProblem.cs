@@ -59,7 +59,7 @@ class Knapsack {
         return String.Format(linePattern, string.Format("{0}", getKnapsackItemList()), weight, "not feasible");
     }
 
-    public void dropItem(int id) {
+    public Knapsack dropItem(int id) {
         for(int i = 0; i < items.Count; i++) {
             if(items[i].id == id) {
                 Item itemToRemove = items[i];
@@ -69,6 +69,7 @@ class Knapsack {
                 nItems--;
             }
         }
+        return this;
     }
 }
 
@@ -87,32 +88,30 @@ class Item {
 
 class KnapsackProblem
 {
-    Knapsack knapsack;
-    List<Item> items;
     const string linePattern = "|{0,20}|{1,20}|{2,20}|";
 
-    static int solveKnapsackBruteForceRecursive(Knapsack knapsack, List<Item> items) {
-        int maxValueInclude = 0, maxValueNotInclude = 0;
+    static int solveKnapsackBruteForceRecursive(Knapsack knapsack, List<Item> items, int maxValue) {
+        int newMaxValue = 0;
 
         if(items.Count > 0) {
             // include
             knapsack.addItem(items[0]);
             Console.WriteLine(knapsack.toString());
-            maxValueInclude = knapsack.getValue();
-            solveKnapsackBruteForceRecursive(knapsack, items.GetRange(1, items.Count-1));
+            int maxValueInclude = Math.Max(knapsack.getValue(), solveKnapsackBruteForceRecursive(knapsack, items.GetRange(1, items.Count-1), maxValue));
             
             // don't include
-            knapsack.dropItem(items[0].id);
-            maxValueNotInclude = knapsack.getValue();
-            solveKnapsackBruteForceRecursive(knapsack, items.GetRange(1, items.Count-1));
+            int maxValueNotInclude = solveKnapsackBruteForceRecursive(knapsack.dropItem(items[0].id), items.GetRange(1, items.Count-1), maxValue);
+
+            // update new max value
+            newMaxValue = Math.Max(maxValueInclude, maxValueNotInclude);
         }
         
-        return Math.Max(maxValueInclude, maxValueNotInclude);
+        return Math.Max(maxValue, newMaxValue);
     }
 
     static int solveKnapsackBruteForce(Knapsack knapsack, List<Item> items) {
         Console.WriteLine(knapsack.toString());
-        int maxValue = solveKnapsackBruteForceRecursive(knapsack, items);
+        int maxValue = solveKnapsackBruteForceRecursive(knapsack, items, 0);
 
         return maxValue;
     }
@@ -128,6 +127,6 @@ class KnapsackProblem
 
         Console.WriteLine(String.Format(linePattern, "Subset", "Total Weight", "Total Value"));
         int maxValue = solveKnapsackBruteForce(new Knapsack(10), items);
-        Console.WriteLine(String.Format("The maximum value you can put in the knapsack is {0}", maxValue));
+        Console.WriteLine(String.Format("\nThe maximum value you can put in the knapsack is {0}", maxValue));
     }
 }
