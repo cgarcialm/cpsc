@@ -5,14 +5,27 @@ namespace knapsack;
 
 class Knapsack {
     public int maxWeight;
-    public int weight = 0;
-    public int value = 0;
-    public List<Item> items = new List<Item>();
-    public int nItems = 0;
+    private int weight = 0;
+    private int value = 0;
+    private List<Item> items = new List<Item>();
+    private int nItems = 0;
 
     public Knapsack(int maxW)
     {
         maxWeight = maxW;
+    }
+     public int getWeight() {
+        if(weight <= maxWeight) {
+            return weight;
+        }
+        return -1;
+    }
+
+    public int getValue() {
+        if(weight <= maxWeight) {
+            return value;
+        }
+        return -1;
     }
     
     public void addItem(Item item) { // TODO: Check if id is already there throw exception
@@ -78,10 +91,12 @@ class KnapsackProblem
             // include
             knapsack.addItem(items[0]);
             Console.WriteLine(knapsack.toString());
-            maxValueInclude = solveKnapsackBruteForce(knapsack, items.GetRange(1, items.Count-1));
+            maxValueInclude = knapsack.getValue();
+            solveKnapsackBruteForce(knapsack, items.GetRange(1, items.Count-1));
             
             // don't include
             knapsack.dropItem(items[0].id);
+            maxValueNotInclude = knapsack.getValue();
             maxValueNotInclude = solveKnapsackBruteForce(knapsack, items.GetRange(1, items.Count-1));
         }
         
@@ -97,6 +112,7 @@ class KnapsackProblem
         items.Add(new Item(4, 5, 25));
 
         Console.WriteLine(String.Format(linePattern, "Subset", "Total Weight", "Total Value"));
-        solveKnapsackBruteForce(new Knapsack(10), items);
+        int maxValue = solveKnapsackBruteForce(new Knapsack(10), items);
+        Console.WriteLine(String.Format("The maximum value you can put in the knapsack is {0}", maxValue));
     }
 }
