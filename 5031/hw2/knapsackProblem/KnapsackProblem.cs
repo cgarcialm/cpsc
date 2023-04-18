@@ -88,8 +88,6 @@ class Item {
 
 class KnapsackProblem
 {
-    const string linePattern = "|{0,20}|{1,20}|{2,20}|";
-
     static int solveKnapsackBruteForceRecursive(Knapsack knapsack, List<Item> items, int maxValue) {
         int newMaxValue = 0;
 
@@ -124,9 +122,12 @@ class KnapsackProblem
         items.Add(new Item(2, 3, 12));
         items.Add(new Item(3, 4, 40));
         items.Add(new Item(4, 5, 25));
-
+        
+        const string linePattern = "|{0,20}|{1,20}|{2,20}|";
         Console.WriteLine(String.Format(linePattern, "Subset", "Total Weight", "Total Value"));
+        Console.WriteLine("+--------------------+--------------------+--------------------+");
         int maxValue = solveKnapsackBruteForce(new Knapsack(10), items);
-        Console.WriteLine(String.Format("\nThe maximum value you can put in the knapsack is {0}", maxValue));
+        Console.WriteLine(String.Format("\nThe maximum value you can put in the knapsack is {0}.", maxValue));
+        Console.WriteLine("Goodbye!");
     }
 }
