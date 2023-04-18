@@ -1,8 +1,18 @@
-﻿using System;
+﻿/******************************************************************************
+
+Welcome to KnapsackProblem.
+KnapsackProblem is a program that solves a knapsack problem with brute force.
+
+*******************************************************************************/
+
+using System;
 
 namespace knapsack;
 
-
+/// <summary>
+/// Knapsack class implements an object that can hold Items which weight is the weight of all its Items and the value is the value of all its Items.
+/// It has a limit for the total weight that is given by its maximum weight.
+/// </summary>
 class Knapsack {
     public int maxWeight;
     private int weight = 0;
@@ -10,17 +20,30 @@ class Knapsack {
     private List<Item> items = new List<Item>();
     private int nItems = 0;
 
+    /// <summary>
+    /// Constructor of Knapsack.
+    /// </summary>
+    /// <param name="maxW">The maximum weight it can hold</param>
     public Knapsack(int maxW)
     {
         maxWeight = maxW;
     }
-     public int getWeight() {
+
+    /// <summary>
+    /// Getter of the weight of the knapsack. If weight is greater than the limit, returns -1.
+    /// </summary>
+    /// <returns></returns>
+    public int getWeight() {
         if(weight <= maxWeight) {
             return weight;
         }
         return -1;
     }
 
+    /// <summary>
+    /// Getter of the value of the knapsack. If weight is greater than the limit, returns -1.
+    /// </summary>
+    /// <returns></returns>
     public int getValue() {
         if(weight <= maxWeight) {
             return value;
@@ -28,6 +51,10 @@ class Knapsack {
         return -1;
     }
     
+    /// <summary>
+    /// Adds an Item to the knapsack.
+    /// </summary>
+    /// <param name="item">The Item to add</param>
     public void addItem(Item item) {
     
         for(int i = 0; i < items.Count; i++) {
@@ -42,6 +69,10 @@ class Knapsack {
         nItems++;
     }
 
+    /// <summary>
+    /// Creates a string that represents the Items that are in the knapsack.
+    /// </summary>
+    /// <returns></returns>
     public string getKnapsackItemList() {
         string s = "{";
         foreach(Item i in items) {
@@ -51,14 +82,23 @@ class Knapsack {
         return s;
     }
 
+    /// <summary>
+    /// Creates a string that represents the knapsack: list of items, weight and value.
+    /// </summary>
+    /// <returns></returns>
     public string toString() {
         const string linePattern = "|{0,20}|{1,20}|{2,20}|";
         if(weight <= maxWeight) {
             return String.Format(linePattern, string.Format("{0}", getKnapsackItemList()), weight, value);
         }
         return String.Format(linePattern, string.Format("{0}", getKnapsackItemList()), weight, "not feasible");
-    }
+    }  
 
+    /// <summary>
+    /// Drops an item with the given id from the knapsack.
+    /// </summary>
+    /// <param name="id">Id of the item to drop</param>
+    /// <returns></returns>
     public Knapsack dropItem(int id) {
         for(int i = 0; i < items.Count; i++) {
             if(items[i].id == id) {
@@ -73,11 +113,20 @@ class Knapsack {
     }
 }
 
+/// <summary>
+/// Item class implements an object that has an id, a weight and a value.
+/// </summary>
 class Item {
     public int id;
     public int weight;
     public int value;
 
+    /// <summary>
+    /// Constructor of Item.
+    /// </summary>
+    /// <param name="id">A number to identify the Item</param>
+    /// <param name="w">The weight of the Item</param>
+    /// <param name="v">The value of the Item</param>
     public Item(int id, int w, int v)
     {
         this.id = id;
@@ -86,8 +135,22 @@ class Item {
     }
 }
 
+/// <summary>
+/// KnapsackProblem class implements a program that solves the knapsack problem for a knapsack of max weight 10 and the following items:
+///     - Item 1: weight 7 and value 42.
+///     - Item 2: weight 3 and value 12.
+///     - Item 3: weight 4 and value 40.
+///     - Item 4: weight 5 and value 25.
+/// </summary>
 class KnapsackProblem
 {
+    /// <summary>
+    /// Solves, using brute force, the knapsack problem recursively considering the option to add or not the next item in the list to the given knapsack. 
+    /// </summary>
+    /// <param name="knapsack">The knapsack in a given state</param>
+    /// <param name="items">A list of items to potentially add to the knapsack</param>
+    /// <param name="maxValue">The current maximum value for the given state of the knapsack</param>
+    /// <returns></returns>
     static int solveKnapsackBruteForceRecursive(Knapsack knapsack, List<Item> items, int maxValue) {
         int newMaxValue = 0;
 
@@ -107,6 +170,12 @@ class KnapsackProblem
         return Math.Max(maxValue, newMaxValue);
     }
 
+    /// <summary>
+    /// A helper method for solveKnapsackBruteForceRecursive to print the empty knapsack.
+    /// </summary>
+    /// <param name="knapsack">An empty knapsack</param>
+    /// <param name="items">A list of items to potentially add to the knapsack</param>
+    /// <returns></returns>
     static int solveKnapsackBruteForce(Knapsack knapsack, List<Item> items) {
         Console.WriteLine(knapsack.toString());
         int maxValue = solveKnapsackBruteForceRecursive(knapsack, items, 0);
@@ -114,7 +183,10 @@ class KnapsackProblem
         return maxValue;
     }
 
-
+    /// <summary>
+    /// The main entry point of the program. Creates a list of Items and an empty knapsack and solves the knapsack problem with brute force.
+    /// </summary>
+    /// <param name="args"></param>
     static void Main(string[] args)
     {
         List<Item> items = new List<Item>();
