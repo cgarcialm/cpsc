@@ -1,13 +1,12 @@
 ﻿/******************************************************************************
 
 Welcome to KnapsackProblem.
-KnapsackProblem is a program that solves a knapsack problem with brute force.
+KnapsackProblem is a program that solves a knapsack problem with Brute Force and Exhaustive Search.
 
 *******************************************************************************/
 
 using System;
-
-namespace knapsack;
+using System.Collections.Generic;
 
 /// <summary>
 /// Knapsack class implements an object that can hold Items which weight is the weight of all its Items and the value is the value of all its Items.
@@ -184,7 +183,7 @@ class KnapsackProblem
     }
 
     /// <summary>
-    /// The main entry point of the program. Creates a list of Items and an empty knapsack and solves the knapsack problem with brute force.
+    /// The main entry point of the program. Creates a list of Items and an empty knapsack and solves the knapsack problem with Brute Force and Exhaustive Search.
     /// </summary>
     /// <param name="args"></param>
     static void Main(string[] args)
@@ -195,6 +194,7 @@ class KnapsackProblem
         items.Add(new Item(3, 4, 40));
         items.Add(new Item(4, 5, 25));
         
+        Console.WriteLine("Welcome to the KnapsackProblem using Brute Force and Exhaustive Search.\n");
         const string linePattern = "|{0,20}|{1,20}|{2,20}|";
         Console.WriteLine(String.Format(linePattern, "Subset", "Total Weight", "Total Value"));
         Console.WriteLine("+--------------------+--------------------+--------------------+");
