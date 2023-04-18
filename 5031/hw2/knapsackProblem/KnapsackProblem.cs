@@ -28,7 +28,14 @@ class Knapsack {
         return -1;
     }
     
-    public void addItem(Item item) { // TODO: Check if id is already there throw exception
+    public void addItem(Item item) {
+    
+        for(int i = 0; i < items.Count; i++) {
+            if(items[i].id == item.id) {
+                throw new Exception(String.Format("There is already an Item with id {0}", item.id));
+            }
+        }
+
         items.Add(item);
         weight += item.weight;
         value += item.value;
