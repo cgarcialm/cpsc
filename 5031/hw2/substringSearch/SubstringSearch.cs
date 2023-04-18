@@ -45,23 +45,25 @@ class SubstringSearch
     }
 
     /// <summary>
-    /// Searches for the first appearance of a substring in a string.
+    /// Searches for the first appearance of a substring in a string. If it's not found or substring is empty returns -1.
     /// </summary>
     /// <param name="totalString">The complete string</param>
     /// <param name="lookUpString">The subtring to look for</param>
     /// <returns></returns>
     public static int BruteForceStringMatch(string totalString, string lookUpString)
-    {
-        for (int i = 0; i <= totalString.Length - lookUpString.Length; i++)
-        {
-            int j = 0;
-            while (j < lookUpString.Length && lookUpString[j] == totalString[i + j])
+    {   
+        if(lookUpString.Length > 0) {
+            for (int i = 0; i <= totalString.Length - lookUpString.Length; i++)
             {
-                j++;
-            }
-            if (j == lookUpString.Length)
-            {
-                return i;
+                int j = 0;
+                while (j < lookUpString.Length && lookUpString[j] == totalString[i + j])
+                {
+                    j++;
+                }
+                if (j == lookUpString.Length)
+                {
+                    return i;
+                }
             }
         }
         return -1;
