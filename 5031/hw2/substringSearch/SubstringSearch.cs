@@ -44,6 +44,7 @@ class SubstringSearch
         Console.WriteLine("Number of addition operations in… ");
         var linePattern = "|{0,-20}|{1,-20}|{2,20}|";
         Console.WriteLine(String.Format(linePattern, "S", "U", "Result"));
+        Console.WriteLine("+--------------------+--------------------+--------------------+");
         for (int i = 0; i < totalStrings.Count; i++)
         {
             Console.WriteLine(String.Format(linePattern, totalStrings[i], lookUpStrings[i], resultIndexes[i]));
