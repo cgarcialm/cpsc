@@ -106,7 +106,7 @@ class Knapsack
         const string linePattern = "|{0,20}|{1,20}|{2,20}|";
         if (weight <= maxWeight)
         {
-            return String.Format(linePattern, string.Format("{0}", getKnapsackItemList()), weight, value);
+            return String.Format(linePattern, string.Format("{0}", getKnapsackItemList()), weight, string.Format("${0}", value));
         }
         return String.Format(linePattern, string.Format("{0}", getKnapsackItemList()), weight, "not feasible");
     }
