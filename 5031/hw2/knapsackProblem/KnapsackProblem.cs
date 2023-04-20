@@ -235,7 +235,7 @@ class KnapsackProblem
         Console.WriteLine(String.Format(linePattern, "Subset", "Total Weight", "Total Value"));
         Console.WriteLine("+--------------------+--------------------+--------------------+");
         int maxValue = solveKnapsackBruteForce(new Knapsack(10), items);
-        Console.WriteLine(String.Format("\nThe maximum value you can put in the knapsack is {0}.", maxValue));
+        Console.WriteLine(String.Format("\nThe maximum value you can put in the knapsack is ${0}.", maxValue));
         Console.WriteLine("Goodbye!");
     }
 }
