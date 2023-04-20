@@ -6,8 +6,8 @@
  * Version: 1.0
  * Purpose: Implementation of SubstringSearch program.
 
-Welcome to SubstringSearch.
-SubstringSearch is a program that searches for substrings within string all given by the user.
+Welcome to SubstringSearch. SubstringSearch is a program that searches for
+substrings within string all given by the user.
 
 *******************************************************************************/
 
@@ -52,14 +52,16 @@ class SubstringSearch
     }
 
     /// <summary>
-    /// Searches for the first appearance of a substring in a string. If it's not found or substring is empty returns -1.
+    /// Searches for the first appearance of a substring in a string. If it's
+    /// not found or substring is empty returns -1.
     /// </summary>
     /// <param name="totalString">The complete string</param>
     /// <param name="lookUpString">The subtring to look for</param>
     /// <returns></returns>
     public static int BruteForceStringMatch(string totalString, string lookUpString)
-    {   
-        if(lookUpString.Length > 0) {
+    {
+        if (lookUpString.Length > 0)
+        {
             for (int i = 0; i <= totalString.Length - lookUpString.Length; i++)
             {
                 int j = 0;
@@ -77,7 +79,8 @@ class SubstringSearch
     }
 
     /// <summary>
-    /// The main entry point of the program. Asks the user for input for a string and a substring to look for until the user wants to stop.
+    /// The main entry point of the program. Asks the user for input for a
+    /// string and a substring to look for until the user wants to stop.
     /// </summary>
     /// <param name="args"></param>
     static void Main(string[] args)
