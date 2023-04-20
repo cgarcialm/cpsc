@@ -6,8 +6,8 @@
  * Version: 1.0
  * Purpose: Implementation of KnapsackProblem program.
 
-Welcome to KnapsackProblem.
-KnapsackProblem is a program that solves a knapsack problem with Brute Force and Exhaustive Search.
+Welcome to KnapsackProblem. KnapsackProblem is a program that solves a knapsack
+problem with Brute Force and Exhaustive Search.
 
 *******************************************************************************/
 
@@ -15,8 +15,9 @@ using System;
 using System.Collections.Generic;
 
 /// <summary>
-/// Knapsack class implements an object that can hold Items which weight is the weight of all its Items and the value is the value of all its Items.
-/// It has a limit for the total weight that is given by its maximum weight.
+/// Knapsack class implements an object that can hold Items which weight is the
+/// weight of all its Items and the value is the value of all its Items. It has
+/// a limit for the total weight that is given by its maximum weight.
 /// </summary>
 class Knapsack
 {
@@ -36,7 +37,8 @@ class Knapsack
     }
 
     /// <summary>
-    /// Getter of the weight of the knapsack. If weight is greater than the limit, returns -1.
+    /// Getter of the weight of the knapsack. If weight is greater than the
+    /// limit, returns -1.
     /// </summary>
     /// <returns></returns>
     public int getWeight()
@@ -49,7 +51,8 @@ class Knapsack
     }
 
     /// <summary>
-    /// Getter of the value of the knapsack. If weight is greater than the limit, returns -1.
+    /// Getter of the value of the knapsack. If weight is greater than the
+    /// limit, returns -1.
     /// </summary>
     /// <returns></returns>
     public int getValue()
@@ -98,7 +101,8 @@ class Knapsack
     }
 
     /// <summary>
-    /// Creates a string that represents the knapsack: list of items, weight and value.
+    /// Creates a string that represents the knapsack: list of items, weight and
+    /// value.
     /// </summary>
     /// <returns></returns>
     public string toString()
@@ -157,20 +161,23 @@ class Item
 }
 
 /// <summary>
-/// KnapsackProblem class implements a program that solves the knapsack problem for a knapsack of max weight 10 and the following items:
-///     - Item 1: weight 7 and value 42.
-///     - Item 2: weight 3 and value 12.
-///     - Item 3: weight 4 and value 40.
-///     - Item 4: weight 5 and value 25.
+/// KnapsackProblem class implements a program that solves the knapsack problem
+/// for a knapsack of max weight 10 and the following items: - Item 1: weight 7
+/// and value 42. - Item 2: weight 3 and value 12. - Item 3: weight 4 and value
+/// 40. - Item 4: weight 5 and value 25.
 /// </summary>
 class KnapsackProblem
 {
     /// <summary>
-    /// Solves, using brute force, the knapsack problem recursively considering the option to add or not the next item in the list to the given knapsack. 
+    /// Solves, using brute force, the knapsack problem recursively considering
+    /// the option to add or not the next item in the list to the given
+    /// knapsack. 
     /// </summary>
     /// <param name="knapsack">The knapsack in a given state</param>
-    /// <param name="items">A list of items to potentially add to the knapsack</param>
-    /// <param name="maxValue">The current maximum value for the given state of the knapsack</param>
+    /// <param name="items">A list of items to potentially add to the
+    /// knapsack</param>
+    /// <param name="maxValue">The current maximum value for the given state of
+    /// the knapsack</param>
     /// <returns></returns>
     static int solveKnapsackBruteForceRecursive(Knapsack knapsack, List<Item> items, int maxValue)
     {
@@ -194,10 +201,12 @@ class KnapsackProblem
     }
 
     /// <summary>
-    /// A helper method for solveKnapsackBruteForceRecursive to print the empty knapsack.
+    /// A helper method for solveKnapsackBruteForceRecursive to print the empty
+    /// knapsack.
     /// </summary>
     /// <param name="knapsack">An empty knapsack</param>
-    /// <param name="items">A list of items to potentially add to the knapsack</param>
+    /// <param name="items">A list of items to potentially add to the
+    /// knapsack</param>
     /// <returns></returns>
     static int solveKnapsackBruteForce(Knapsack knapsack, List<Item> items)
     {
@@ -208,7 +217,9 @@ class KnapsackProblem
     }
 
     /// <summary>
-    /// The main entry point of the program. Creates a list of Items and an empty knapsack and solves the knapsack problem with Brute Force and Exhaustive Search.
+    /// The main entry point of the program. Creates a list of Items and an
+    /// empty knapsack and solves the knapsack problem with Brute Force and
+    /// Exhaustive Search.
     /// </summary>
     /// <param name="args"></param>
     static void Main(string[] args)
