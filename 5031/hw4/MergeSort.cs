@@ -40,11 +40,11 @@ class MergeSort {
                 j++;
             }
             k++;
-            if(i == B.Length) {
-                Array.Copy(C, j, A, k, A.Length - 1);
-            } else {
-                Array.Copy(B, i, A, k, A.Length - 1);
-            }
+        }
+        if(i == B.Length) {
+            Array.Copy(C, j, A, k, A.Length - k);
+        } else {
+            Array.Copy(B, i, A, k, A.Length - k);
         }
     }
 
