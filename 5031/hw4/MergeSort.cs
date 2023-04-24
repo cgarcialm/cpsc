@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 class MergeSort {
     /// <summary>
@@ -51,12 +52,8 @@ class MergeSort {
     /// Prints an array into the console
     /// </summary>
     /// <param name="anArray">Int array</param>
-    static void printArray(int[] anArray) {
-        Console.Write("{");
-        for(int i = 0; i < anArray.Length; i++) {
-            Console.Write(anArray[i] + ", ");
-        }
-        Console.Write("}");
+    static string arrayToString(int[] anArray) {
+        return "{" + String.Join(",", anArray) + "}";
     }
 
     /// <summary>
@@ -65,9 +62,17 @@ class MergeSort {
     /// <param name="args"></param>
     static void Main(string[] args) {
         MergeSort sorter = new MergeSort();
+
         int[] array = new int[] {3, 2, 1};
-        printArray(array);
-        sorter.sort(ref array);
-        printArray(array);
+        int[] sortedArray = new int[array.Length];
+        array.CopyTo(sortedArray, 0);
+        sorter.sort(ref sortedArray);
+
+        Console.WriteLine("Welcome to the MergeSort.\n");
+        const string linePattern = "|{0,20}|{1,20}|{2,20}|";
+        Console.WriteLine(String.Format(linePattern, "Test Case #", "A", "Sorted A"));
+        Console.WriteLine("+--------------------+--------------------+--------------------+");
+        Console.WriteLine(String.Format(linePattern, "1", arrayToString(array), arrayToString(sortedArray)));
+        
     }
 }
