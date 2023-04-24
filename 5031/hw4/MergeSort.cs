@@ -62,17 +62,23 @@ class MergeSort {
     /// <param name="args"></param>
     static void Main(string[] args) {
         MergeSort sorter = new MergeSort();
-
-        int[] array = new int[] {3, 2, 1};
-        int[] sortedArray = new int[array.Length];
-        array.CopyTo(sortedArray, 0);
-        sorter.sort(ref sortedArray);
+        List<int[]> arraysToSort = new List<int[]>();
+        arraysToSort.Add(new int[] {});
+        arraysToSort.Add(new int[] {0, 1, 2, 3});
+        arraysToSort.Add(new int[] {0, 1, 2, 3, 4});
+        arraysToSort.Add(new int[] {3, 1, 4, 1, 5, 9, 2, 6, 5});
+        arraysToSort.Add(new int[] {9, 8, 7, 6, 5, 4, 3, 2, 1});
 
         Console.WriteLine("Welcome to the MergeSort.\n");
         const string linePattern = "|{0,20}|{1,20}|{2,20}|";
         Console.WriteLine(String.Format(linePattern, "Test Case #", "A", "Sorted A"));
         Console.WriteLine("+--------------------+--------------------+--------------------+");
-        Console.WriteLine(String.Format(linePattern, "1", arrayToString(array), arrayToString(sortedArray)));
+        for(int i = 0; i < arraysToSort.Count; i++) {
+            int[] sortedArray = new int[arraysToSort[i].Length];
+            arraysToSort[i].CopyTo(sortedArray, 0);
+            sorter.sort(ref sortedArray);
+            Console.WriteLine(String.Format(linePattern, i, arrayToString(arraysToSort[i]), arrayToString(sortedArray)));
+        }
         
     }
 }
