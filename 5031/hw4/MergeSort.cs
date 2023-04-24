@@ -12,9 +12,10 @@ class MergeSort {
         if(A.Length > 1) {
             int[] B = new int[A.Length%2 == 0 ? A.Length/2 : A.Length/2+1];
             Array.Copy(A, B, A.Length%2 == 0 ? A.Length/2 : A.Length/2+1);
-            sort(ref B);
             int[] C = new int[A.Length/2];
             Array.Copy(A, A.Length%2 == 0 ? A.Length/2 : A.Length/2+1, C, 0, A.Length/2);
+
+            sort(ref B);
             sort(ref C);
             Merge(B, C, ref A);
         }
