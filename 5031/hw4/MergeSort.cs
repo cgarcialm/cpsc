@@ -1,5 +1,18 @@
-﻿using System;
-using System.Linq;
+﻿/******************************************************************************
+
+ * Author: Cecilia Garcia Lopez de Munain <cgarcialopezdemunain@seattleu.edu>
+ * Date: Apr 24
+ * Platform: MacOS Monterrey. Version 12.0.1.
+ * Version: 1.0
+ * Purpose: Implementation of MergeSort sorting algorithm.
+
+Welcome to MergeSort. MergeSort is a program that sorts a list of arrays using
+merge sort algorithm.
+
+*******************************************************************************/
+
+using System;
+using System.Collections.Generic;
 
 class MergeSort {
     /// <summary>
@@ -50,7 +63,7 @@ class MergeSort {
     }
 
     /// <summary>
-    /// Prints an array into the console
+    /// Generates a string to represent given array
     /// </summary>
     /// <param name="anArray">Int array</param>
     static string arrayToString(int[] anArray) {
@@ -58,7 +71,9 @@ class MergeSort {
     }
 
     /// <summary>
-    /// The main entry point of the program.
+    /// The main entry point of the program. 
+    /// Creates a list of arrays to test and sorts them.
+    /// Prints output into console.
     /// </summary>
     /// <param name="args"></param>
     static void Main(string[] args) {
@@ -78,8 +93,9 @@ class MergeSort {
             int[] sortedArray = new int[arraysToSort[i].Length];
             arraysToSort[i].CopyTo(sortedArray, 0);
             sorter.sort(ref sortedArray);
-            Console.WriteLine(String.Format(linePattern, i, arrayToString(arraysToSort[i]), arrayToString(sortedArray)));
+            Console.WriteLine(String.Format(linePattern, i+1, arrayToString(arraysToSort[i]), arrayToString(sortedArray)));
         }
+        Console.WriteLine("\nGoodbye!");
         
     }
 }
