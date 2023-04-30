@@ -123,8 +123,11 @@ class EuclideanDistance {
     }
 
     /// <summary>
-    /// The main entry point of the program. Runs NTESTS, in each test:
-    ///     - creates two points of randomly generated number of dimensions with 
+    /// The main entry point of the program. Runs NTESTS.
+    /// In the first test creates two points of randomly generated number of dimensions 
+    /// with the same randomly generated values 
+    /// In the other tests:
+    ///     - creates two points of randomly generated number of dimensions with
     ///     randomly generated values
     ///     - calculates the distance between the points iteratively and recursively
     ///     - prints results into console
@@ -135,10 +138,10 @@ class EuclideanDistance {
         const int NTESTS = 10;
 
         const int MINDIMENSIONS = 1;
-        const int MAXDIMENSIONS = 5;
+        const int MAXDIMENSIONS = 6;
 
         const int MINVALUE = -10;
-        const int MAXVALUE = 10;
+        const int MAXVALUE = 11;
         
         Console.WriteLine("Welcome to the EuclideanDistance calculator.\n");
         const string linePattern = "|{0,20}|{1,20}|{2,20}|{3,20}|";
@@ -150,11 +153,18 @@ class EuclideanDistance {
             int numDimensions = randNum.Next(MINDIMENSIONS, MAXDIMENSIONS);;
             int[] p1 = new int[numDimensions];
             int[] p2 = new int[numDimensions];
-            for (int dim = 0; dim < numDimensions; dim++) {
-                p1[dim] = randNum.Next(MINVALUE, MAXVALUE);
-                p2[dim] = randNum.Next(MINVALUE, MAXVALUE);
-            }
 
+            for (int dim = 0; dim < numDimensions; dim++) {
+                if(test==1) {
+                    int val = randNum.Next(MINVALUE, MAXVALUE);
+                    p1[dim] = val;
+                    p2[dim] = val;
+                } else {
+                    p1[dim] = randNum.Next(MINVALUE, MAXVALUE);
+                    p2[dim] = randNum.Next(MINVALUE, MAXVALUE);
+                }
+            }
+            
             EuclideanDistance euDist = new EuclideanDistance();
             Console.WriteLine(String.Format(
                 linePattern, 
