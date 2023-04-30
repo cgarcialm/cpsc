@@ -45,14 +45,14 @@ class EuclideanDistance {
     }
 
     private double _calculateRecursively(int[] p1, int[] p2, int numDimensions) {
-        if(numDimensions == 0) {
+        if(numDimensions == 1) {
             return Math.Pow(p1[0] - p2[0], 2);
         }
         return Math.Pow(p1[numDimensions-1] - p2[numDimensions-1], 2) + _calculateRecursively(p1, p2, numDimensions-1);
     }
 
     public double calculateRecursively(int[] p1, int[] p2, int numDimensions) {
-        return Math.Round(Math.Sqrt(_calculateRecursively(p1, p2, numDimensions-1)),3);
+        return Math.Round(Math.Sqrt(_calculateRecursively(p1, p2, numDimensions)), 3);
     }
 
     static void Main(string[] args)
@@ -77,6 +77,9 @@ class EuclideanDistance {
                 p1[dim] = randNum.Next(MINVALUE, MAXVALUE);
                 p2[dim] = randNum.Next(MINVALUE, MAXVALUE);
             }
+            // int numDimensions = 3;
+            // int[] p1 = new int[] {-3, 2, -4};
+            // int[] p2 = new int[] {-7, 2, 2};
 
             EuclideanDistance euDist = new EuclideanDistance();
             Console.WriteLine(String.Format(
