@@ -40,9 +40,8 @@ class EuclideanDistance {
         for(int dim = 0; dim < numDimensions; dim++) {
             distance += Math.Pow(p1[dim] - p2[dim], 2);
         }
-        distance = Math.Round(Math.Sqrt(distance),3);
 
-        return distance;
+        return Math.Round(Math.Sqrt(distance),3);
     }
 
     private double _calculateRecursively(int[] p1, int[] p2, int numDimensions) {
