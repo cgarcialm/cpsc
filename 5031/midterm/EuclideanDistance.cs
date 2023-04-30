@@ -12,7 +12,7 @@ class InvalidPointsOrDimensionsException : Exception {
 
 class EuclideanDistance {
 
-    private string printPoint(int[] p)
+    public string printPoint(int[] p)
     {
         string s = "{";
         foreach (int dim in p)
@@ -40,7 +40,7 @@ class EuclideanDistance {
         for(int dim = 0; dim < numDimensions; dim++) {
             distance += Math.Pow(p1[dim] - p2[dim], 2);
         }
-        distance = Math.Sqrt(distance);
+        distance = Math.Round(Math.Sqrt(distance),3);
 
         return distance;
     }
@@ -53,18 +53,42 @@ class EuclideanDistance {
     }
 
     public double calculateRecursively(int[] p1, int[] p2, int numDimensions) {
-        return Math.Sqrt(_calculateRecursively(p1, p2, numDimensions-1));
+        return Math.Round(Math.Sqrt(_calculateRecursively(p1, p2, numDimensions-1)),3);
     }
 
     static void Main(string[] args)
     {
-        int[] p1 = {1, 1, 1, 1};
-        int[] p2 = {0, 0, 0};
-        int numDimensions = 4;
+        const int MINDIMENSIONS = 1;
+        const int MAXDIMENSIONS = 5;
 
-        EuclideanDistance euDist = new EuclideanDistance();
-        Console.WriteLine("Iteratively calculated distance: {0:0.00}", euDist.calculateIteratively(p1, p2, numDimensions));
-        Console.WriteLine("Recursively calculated distance: {0:0.00}", euDist.calculateRecursively(p1, p2, numDimensions));
+        const int MINVALUE = -10;
+        const int MAXVALUE = 10;
+        
+        Console.WriteLine("Welcome to the EuclideanDistance calculator.\n");
+        const string linePattern = "|{0,20}|{1,20}|{2,20}|{3,20}|";
+        Console.WriteLine(String.Format(linePattern, "P1", "P2", "Iterative Dist.", "Recursive Dist."));
+        Console.WriteLine("+--------------------+--------------------+--------------------+--------------------+");
+
+        Random randNum = new Random();
+        for (int test = 1; test <=10; test++) {
+            int numDimensions = randNum.Next(MINDIMENSIONS, MAXDIMENSIONS);;
+            int[] p1 = new int[numDimensions];
+            int[] p2 = new int[numDimensions];
+            for (int dim = 0; dim < numDimensions; dim++) {
+                p1[dim] = randNum.Next(MINVALUE, MAXVALUE);
+                p2[dim] = randNum.Next(MINVALUE, MAXVALUE);
+            }
+
+            EuclideanDistance euDist = new EuclideanDistance();
+            Console.WriteLine(String.Format(
+                linePattern, 
+                euDist.printPoint(p1), 
+                euDist.printPoint(p2), 
+                euDist.calculateIteratively(p1, p2, numDimensions), 
+                euDist.calculateRecursively(p1, p2, numDimensions)
+                ));
+        }
+        Console.WriteLine("\nGoodbye!");
     }
 }
 
