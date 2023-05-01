@@ -62,7 +62,7 @@ class EuclideanDistance {
     /// <param name="p1">Point p1</param>
     /// <param name="p2">Point p2</param>
     /// <param name="numDimensions">Number of dimensions</param>
-    private void checkPointDims(int[] p1, int[] p2, int numDimensions) {
+    private void checkPointsDims(int[] p1, int[] p2, int numDimensions) {
         if(p1.Length != numDimensions) {
             throw new InvalidPointsOrDimensionsException(
                 String.Format("Invalid dimensions ({0}) for point: {1}.", 
@@ -87,7 +87,7 @@ class EuclideanDistance {
     /// <param name="numDimensions">Number of dimensions</param>
     /// <returns></returns>
     public double calculateIteratively(int[] p1, int[] p2, int numDimensions) {
-        checkPointDims(p1, p2, numDimensions);
+        checkPointsDims(p1, p2, numDimensions);
         double distance = 0;
         for(int dim = 0; dim < numDimensions; dim++) {
             distance += Math.Pow(p1[dim] - p2[dim], 2);
@@ -140,7 +140,7 @@ class EuclideanDistance {
         const int MINVALUE = -10;
         const int MAXVALUE = 11;
         const string LINEPATTERN = "|{0,20}|{1,20}|{2,20}|{3,20}|";
-        
+
         Console.WriteLine("Welcome to the EuclideanDistance calculator.\n");
         Console.WriteLine(String.Format(LINEPATTERN, "P1", "P2", "Iterative Dist.", "Recursive Dist."));
         Console.WriteLine("+--------------------+--------------------+--------------------+--------------------+");
