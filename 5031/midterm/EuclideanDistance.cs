@@ -148,6 +148,7 @@ class EuclideanDistance {
         Console.WriteLine("+--------------------+--------------------+--------------------+--------------------+");
 
         Random randNum = new Random();
+        EuclideanDistance euDist = new EuclideanDistance();
         for (int test = 1; test <=NTESTS; test++) {
             int numDimensions = randNum.Next(MINDIMENSIONS, MAXDIMENSIONS);;
             int[] p1 = new int[numDimensions];
@@ -164,7 +165,6 @@ class EuclideanDistance {
                 }
             }
             
-            EuclideanDistance euDist = new EuclideanDistance();
             Console.WriteLine(String.Format(
                 linePattern, 
                 euDist.printPoint(p1), 
