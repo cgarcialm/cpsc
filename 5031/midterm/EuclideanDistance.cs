@@ -17,7 +17,8 @@ using System;
 /// InvalidPointsOrDimensionsException implements and Exception that inherits
 /// from Exception and prints the error of the input points and dimension.
 /// </summary>
-class InvalidPointsOrDimensionsException : Exception {
+class InvalidPointsOrDimensionsException : Exception
+{
     public InvalidPointsOrDimensionsException()
     {
     }
@@ -33,7 +34,8 @@ class InvalidPointsOrDimensionsException : Exception {
 ///     distance = √((xn-yn)^2+(x(n-1)-y(n-1))^2+...+(x0-y0)^2)
 ///     n: number of dimensions of points X and Y
 /// </summary>
-class EuclideanDistance {
+class EuclideanDistance
+{
 
     /// <summary>
     /// Creates a string representation of point p
@@ -47,7 +49,7 @@ class EuclideanDistance {
         {
             s += dim + ",";
         }
-        s = s.Remove(s.Length - 1, 1); 
+        s = s.Remove(s.Length - 1, 1);
         s += "}";
         return s;
     }
@@ -62,18 +64,21 @@ class EuclideanDistance {
     /// <param name="p1">Point p1</param>
     /// <param name="p2">Point p2</param>
     /// <param name="numDimensions">Number of dimensions</param>
-    private void checkPointsDims(int[] p1, int[] p2, int numDimensions) {
-        if(p1.Length != numDimensions) {
+    private void checkPointsDims(int[] p1, int[] p2, int numDimensions)
+    {
+        if (p1.Length != numDimensions)
+        {
             throw new InvalidPointsOrDimensionsException(
-                String.Format("Invalid dimensions ({0}) for point: {1}.", 
-                numDimensions, 
+                String.Format("Invalid dimensions ({0}) for point: {1}.",
+                numDimensions,
                 printPoint(p1))
                 );
         }
-        if(p2.Length != numDimensions) {
+        if (p2.Length != numDimensions)
+        {
             throw new InvalidPointsOrDimensionsException(
-                String.Format("Invalid dimensions ({0}) for point: {1}.", 
-                numDimensions, 
+                String.Format("Invalid dimensions ({0}) for point: {1}.",
+                numDimensions,
                 printPoint(p2))
                 );
         }
@@ -86,14 +91,16 @@ class EuclideanDistance {
     /// <param name="p2">Point p2</param>
     /// <param name="numDimensions">Number of dimensions</param>
     /// <returns></returns>
-    public double calculateIteratively(int[] p1, int[] p2, int numDimensions) {
+    public double calculateIteratively(int[] p1, int[] p2, int numDimensions)
+    {
         checkPointsDims(p1, p2, numDimensions);
         double distance = 0;
-        for(int dim = 0; dim < numDimensions; dim++) {
+        for (int dim = 0; dim < numDimensions; dim++)
+        {
             distance += Math.Pow(p1[dim] - p2[dim], 2);
         }
 
-        return Math.Round(Math.Sqrt(distance),3);
+        return Math.Round(Math.Sqrt(distance), 3);
     }
 
     /// <summary>
@@ -103,12 +110,14 @@ class EuclideanDistance {
     /// <param name="p2">Point p2</param>
     /// <param name="numDimensions">Number of dimensions</param>
     /// <returns></returns>
-    private double _calculateRecursively(int[] p1, int[] p2, int numDimensions) {
-        if(numDimensions == 1) {
+    private double _calculateRecursively(int[] p1, int[] p2, int numDimensions)
+    {
+        if (numDimensions == 1)
+        {
             return Math.Pow(p1[0] - p2[0], 2);
         }
-        return Math.Pow(p1[numDimensions-1] - p2[numDimensions-1], 2) 
-            + _calculateRecursively(p1, p2, numDimensions-1);
+        return Math.Pow(p1[numDimensions - 1] - p2[numDimensions - 1], 2)
+            + _calculateRecursively(p1, p2, numDimensions - 1);
     }
 
     /// <summary>
@@ -118,7 +127,8 @@ class EuclideanDistance {
     /// <param name="p2"></param>
     /// <param name="numDimensions"></param>
     /// <returns></returns>
-    public double calculateRecursively(int[] p1, int[] p2, int numDimensions) {
+    public double calculateRecursively(int[] p1, int[] p2, int numDimensions)
+    {
         return Math.Round(Math.Sqrt(_calculateRecursively(p1, p2, numDimensions)), 3);
     }
 
@@ -147,27 +157,32 @@ class EuclideanDistance {
 
         Random randNum = new Random();
         EuclideanDistance euDist = new EuclideanDistance();
-        for (int test = 1; test <=NTESTS; test++) {
-            int numDimensions = randNum.Next(MINDIMENSIONS, MAXDIMENSIONS);;
+        for (int test = 1; test <= NTESTS; test++)
+        {
+            int numDimensions = randNum.Next(MINDIMENSIONS, MAXDIMENSIONS); ;
             int[] p1 = new int[numDimensions];
             int[] p2 = new int[numDimensions];
 
-            for (int dim = 0; dim < numDimensions; dim++) {
-                if(test==1) {
+            for (int dim = 0; dim < numDimensions; dim++)
+            {
+                if (test == 1)
+                {
                     int val = randNum.Next(MINVALUE, MAXVALUE);
                     p1[dim] = val;
                     p2[dim] = val;
-                } else {
+                }
+                else
+                {
                     p1[dim] = randNum.Next(MINVALUE, MAXVALUE);
                     p2[dim] = randNum.Next(MINVALUE, MAXVALUE);
                 }
             }
-            
+
             Console.WriteLine(String.Format(
-                LINEPATTERN, 
-                euDist.printPoint(p1), 
-                euDist.printPoint(p2), 
-                euDist.calculateIteratively(p1, p2, numDimensions), 
+                LINEPATTERN,
+                euDist.printPoint(p1),
+                euDist.printPoint(p2),
+                euDist.calculateIteratively(p1, p2, numDimensions),
                 euDist.calculateRecursively(p1, p2, numDimensions)
                 ));
         }
