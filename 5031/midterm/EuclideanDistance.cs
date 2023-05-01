@@ -135,16 +135,14 @@ class EuclideanDistance {
     static void Main(string[] args)
     {
         const int NTESTS = 10;
-
         const int MINDIMENSIONS = 1;
         const int MAXDIMENSIONS = 6;
-
         const int MINVALUE = -10;
         const int MAXVALUE = 11;
+        const string LINEPATTERN = "|{0,20}|{1,20}|{2,20}|{3,20}|";
         
         Console.WriteLine("Welcome to the EuclideanDistance calculator.\n");
-        const string linePattern = "|{0,20}|{1,20}|{2,20}|{3,20}|";
-        Console.WriteLine(String.Format(linePattern, "P1", "P2", "Iterative Dist.", "Recursive Dist."));
+        Console.WriteLine(String.Format(LINEPATTERN, "P1", "P2", "Iterative Dist.", "Recursive Dist."));
         Console.WriteLine("+--------------------+--------------------+--------------------+--------------------+");
 
         Random randNum = new Random();
@@ -166,7 +164,7 @@ class EuclideanDistance {
             }
             
             Console.WriteLine(String.Format(
-                linePattern, 
+                LINEPATTERN, 
                 euDist.printPoint(p1), 
                 euDist.printPoint(p2), 
                 euDist.calculateIteratively(p1, p2, numDimensions), 
