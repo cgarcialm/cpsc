@@ -97,7 +97,7 @@ class EuclideanDistance {
     }
 
     /// <summary>
-    /// Helper function to calculateRecursively
+    /// Calculates the distance^2 between two points using recursion
     /// </summary>
     /// <param name="p1">Point p1</param>
     /// <param name="p2">Point p2</param>
@@ -112,7 +112,7 @@ class EuclideanDistance {
     }
 
     /// <summary>
-    /// Calculates the distance between two points using recursion
+    /// Helper function to compute the square root of _calculateRecursively output
     /// </summary>
     /// <param name="p1"></param>
     /// <param name="p2"></param>
@@ -123,14 +123,13 @@ class EuclideanDistance {
     }
 
     /// <summary>
-    /// The main entry point of the program. Runs NTESTS.
-    /// In the first test creates two points of randomly generated number of dimensions 
-    /// with the same randomly generated values 
-    /// In the other tests:
-    ///     - creates two points of randomly generated number of dimensions with
+    /// The main entry point of the program. Runs 10 tests.
+    /// 1. In the first test creates two points of randomly generated number of dimensions 
+    ///     with the same randomly generated values 
+    ///     In the other tests creates two points of randomly generated number of dimensions with
     ///     randomly generated values
-    ///     - calculates the distance between the points iteratively and recursively
-    ///     - prints results into console
+    /// 2. Calculates the distance between the points iteratively and recursively
+    /// 3. Prints results into console
     /// </summary>
     /// <param name="args"></param>
     static void Main(string[] args)
