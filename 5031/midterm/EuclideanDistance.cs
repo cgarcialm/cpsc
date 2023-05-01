@@ -56,7 +56,7 @@ class EuclideanDistance
 
     /// <summary>
     /// Checks that the set of points and the number of dimensions are valid 
-    /// by checking that:
+    /// by validating that:
     ///     - p1 has length numDimensions
     ///     - p2 has length numDimensions
     /// Hence, p1 and p2 have the same length.
@@ -100,7 +100,7 @@ class EuclideanDistance
             distance += Math.Pow(p1[dim] - p2[dim], 2);
         }
 
-        return Math.Round(Math.Sqrt(distance), 3);
+        return Math.Sqrt(distance);
     }
 
     /// <summary>
@@ -129,7 +129,7 @@ class EuclideanDistance
     /// <returns></returns>
     public double calculateRecursively(int[] p1, int[] p2, int numDimensions)
     {
-        return Math.Round(Math.Sqrt(_calculateRecursively(p1, p2, numDimensions)), 3);
+        return Math.Sqrt(_calculateRecursively(p1, p2, numDimensions));
     }
 
     /// <summary>
@@ -182,8 +182,8 @@ class EuclideanDistance
                 LINEPATTERN,
                 euDist.printPoint(p1),
                 euDist.printPoint(p2),
-                euDist.calculateIteratively(p1, p2, numDimensions),
-                euDist.calculateRecursively(p1, p2, numDimensions)
+                Math.Round(euDist.calculateIteratively(p1, p2, numDimensions), 3),
+                Math.Round(euDist.calculateRecursively(p1, p2, numDimensions), 3)
                 ));
         }
         Console.WriteLine("\nGoodbye!");
