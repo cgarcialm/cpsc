@@ -42,7 +42,7 @@ class EuclideanDistance
     /// </summary>
     /// <param name="p">Point p</param>
     /// <returns></returns>
-    public string printPoint(int[] p)
+    public string pointToString(int[] p)
     {
         string s = "{";
         foreach (int dim in p)
@@ -71,7 +71,7 @@ class EuclideanDistance
             throw new InvalidPointsOrDimensionsException(
                 String.Format("Invalid dimensions ({0}) for point: {1}.",
                 numDimensions,
-                printPoint(p1))
+                pointToString(p1))
                 );
         }
         if (p2.Length != numDimensions)
@@ -79,7 +79,7 @@ class EuclideanDistance
             throw new InvalidPointsOrDimensionsException(
                 String.Format("Invalid dimensions ({0}) for point: {1}.",
                 numDimensions,
-                printPoint(p2))
+                pointToString(p2))
                 );
         }
     }
@@ -180,8 +180,8 @@ class EuclideanDistance
 
             Console.WriteLine(String.Format(
                 LINEPATTERN,
-                euDist.printPoint(p1),
-                euDist.printPoint(p2),
+                euDist.pointToString(p1),
+                euDist.pointToString(p2),
                 Math.Round(euDist.calculateIteratively(p1, p2, numDimensions), 3),
                 Math.Round(euDist.calculateRecursively(p1, p2, numDimensions), 3)
                 ));
