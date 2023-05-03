@@ -4,17 +4,19 @@
  * Date: Apr 30 2023
  * Platform: MacOS Monterrey. Version 12.0.1.
  * Version: 1.0
- * Purpose: Implementation of EuclideanDistance calculator program.
+ * Purpose: Implementation of DistanceCalculator program.
 
-Welcome to EuclideanDistance. EuclideanDistance is a program that calculates
-the geometric euclidean distance between two points.
+Welcome to DistanceCalculator. DistanceCalculator is a program that calculates
+the geometric euclidean distance between two points using the Pythagorean Theorem:
+    distance = √((xn-yn)^2+(x(n-1)-y(n-1))^2+...+(x0-y0)^2)
+    n: number of dimensions of points X and Y
 
 *******************************************************************************/
 
 using System;
 
 /// <summary>
-/// InvalidPointsOrDimensionsException implements and Exception that inherits
+/// InvalidPointsOrDimensionsException implements and Exception that inherits 
 /// from Exception and prints the error of the input points and dimension.
 /// </summary>
 class InvalidDimensionsException : Exception
@@ -31,10 +33,12 @@ class InvalidDimensionsException : Exception
 /// <summary>
 /// Point represents a location in space in Euclidean geometry.
 /// </summary>
-class Point {
+class Point
+{
     private int[] array;
 
-    public Point(int[] anArray) {
+    public Point(int[] anArray)
+    {
         array = anArray;
     }
 
@@ -71,12 +75,13 @@ class Point {
     }
 
     /// <summary>
-    /// Calculates the distance between this point an another given one
-    /// using iteration. Validates point p2 first.
+    /// Calculates the distance between this point an another given one using 
+    /// iteration. Validates dimensions of point p2 first.
     /// </summary>
     /// <param name="p2">Point p2</param>
     /// <returns>distance</returns>
-    public double calculateDistIter(Point p2) {
+    public double calculateDistIter(Point p2)
+    {
         checkSameDims(p2);
         double distance = 0;
         for (int dim = 0; dim < array.Length; dim++)
@@ -88,8 +93,8 @@ class Point {
     }
 
     /// <summary>
-    /// Calculates the distance^2 between this point an another given one 
-    /// using recursion
+    /// Helper function to calculate distance^2 between this point an 
+    /// another given one using recursion.
     /// </summary>
     /// <param name="p2">Point p2</param>
     /// <returns>distance^2</returns>
@@ -104,31 +109,32 @@ class Point {
     }
 
     /// <summary>
-    /// Helper function to validate point p2 and compute the 
-    /// square root of _calculateDistRec output
+    /// Calculates distance with point p2 using recursion.
+    /// Validates dimensions of point p2 first.
     /// </summary>
-    /// <param name="p1"></param>
-    /// <param name="p2"></param>
-    /// <param name="numDimensions"></param>
+    /// <param name="p2">Point p2</param>
     /// <returns></returns>
-    public double calculateDistRec(Point p2) {
+    public double calculateDistRec(Point p2)
+    {
         checkSameDims(p2);
         return Math.Sqrt(_calculateDistRec(p2, array.Length));
     }
 }
 
 /// <summary>
-/// Distance Calculator implements a program to compute distances between points
-/// with different techniques and test its results by comparing the outputs in console.
+/// DistanceCalculator implements a program to compute distances between points
+/// with different techniques and test its results by comparing the outputs in 
+/// console.
 /// </summary>
-class DistanceCalculator {
+class DistanceCalculator
+{
 
     /// <summary>
     /// The main entry point of the program. Runs 10 tests.
-    /// 1. In the first test creates two points of randomly generated number of dimensions 
-    ///     with the same randomly generated values 
-    ///     In the other tests creates two points of randomly generated number of dimensions with
-    ///     randomly generated values
+    /// 1. In the first test creates two points of randomly generated number of
+    ///     dimensions with the same randomly generated values 
+    ///     In the other tests creates two points of randomly generated number 
+    ///     of dimensions with randomly generated values
     /// 2. Calculates the distance between the points iteratively and recursively
     /// 3. Prints results into console
     /// </summary>
@@ -142,7 +148,7 @@ class DistanceCalculator {
         const int MAXVALUE = 11;
         const string LINEPATTERN = "|{0,20}|{1,20}|{2,20}|{3,20}|";
 
-        Console.WriteLine("Welcome to the EuclideanDistance calculator.\n");
+        Console.WriteLine("Welcome to the Distance Calculator.\n");
         Console.WriteLine(String.Format(LINEPATTERN, "P1", "P2", "Iterative Dist.", "Recursive Dist."));
         Console.WriteLine("+--------------------+--------------------+--------------------+--------------------+");
 
