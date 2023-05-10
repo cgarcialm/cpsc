@@ -142,51 +142,51 @@ class EuclideanDistance
     /// 3. Prints results into console
     /// </summary>
     /// <param name="args"></param>
-    static void Main(string[] args)
-    {
-        const int NTESTS = 10;
-        const int MINDIMENSIONS = 1;
-        const int MAXDIMENSIONS = 6;
-        const int MINVALUE = -10;
-        const int MAXVALUE = 11;
-        const string LINEPATTERN = "|{0,20}|{1,20}|{2,20}|{3,20}|";
+    // static void Main(string[] args)
+    // {
+    //     const int NTESTS = 10;
+    //     const int MINDIMENSIONS = 1;
+    //     const int MAXDIMENSIONS = 6;
+    //     const int MINVALUE = -10;
+    //     const int MAXVALUE = 11;
+    //     const string LINEPATTERN = "|{0,20}|{1,20}|{2,20}|{3,20}|";
 
-        Console.WriteLine("Welcome to the EuclideanDistance calculator.\n");
-        Console.WriteLine(String.Format(LINEPATTERN, "P1", "P2", "Iterative Dist.", "Recursive Dist."));
-        Console.WriteLine("+--------------------+--------------------+--------------------+--------------------+");
+    //     Console.WriteLine("Welcome to the EuclideanDistance calculator.\n");
+    //     Console.WriteLine(String.Format(LINEPATTERN, "P1", "P2", "Iterative Dist.", "Recursive Dist."));
+    //     Console.WriteLine("+--------------------+--------------------+--------------------+--------------------+");
 
-        Random randNum = new Random();
-        EuclideanDistance euDist = new EuclideanDistance();
-        for (int test = 1; test <= NTESTS; test++)
-        {
-            int numDimensions = randNum.Next(MINDIMENSIONS, MAXDIMENSIONS); ;
-            int[] p1 = new int[numDimensions];
-            int[] p2 = new int[numDimensions];
+    //     Random randNum = new Random();
+    //     EuclideanDistance euDist = new EuclideanDistance();
+    //     for (int test = 1; test <= NTESTS; test++)
+    //     {
+    //         int numDimensions = randNum.Next(MINDIMENSIONS, MAXDIMENSIONS); ;
+    //         int[] p1 = new int[numDimensions];
+    //         int[] p2 = new int[numDimensions];
 
-            for (int dim = 0; dim < numDimensions; dim++)
-            {
-                if (test == 1)
-                {
-                    int val = randNum.Next(MINVALUE, MAXVALUE);
-                    p1[dim] = val;
-                    p2[dim] = val;
-                }
-                else
-                {
-                    p1[dim] = randNum.Next(MINVALUE, MAXVALUE);
-                    p2[dim] = randNum.Next(MINVALUE, MAXVALUE);
-                }
-            }
+    //         for (int dim = 0; dim < numDimensions; dim++)
+    //         {
+    //             if (test == 1)
+    //             {
+    //                 int val = randNum.Next(MINVALUE, MAXVALUE);
+    //                 p1[dim] = val;
+    //                 p2[dim] = val;
+    //             }
+    //             else
+    //             {
+    //                 p1[dim] = randNum.Next(MINVALUE, MAXVALUE);
+    //                 p2[dim] = randNum.Next(MINVALUE, MAXVALUE);
+    //             }
+    //         }
 
-            Console.WriteLine(String.Format(
-                LINEPATTERN,
-                euDist.pointToString(p1),
-                euDist.pointToString(p2),
-                Math.Round(euDist.calculateIteratively(p1, p2, numDimensions), 3),
-                Math.Round(euDist.calculateRecursively(p1, p2, numDimensions), 3)
-                ));
-        }
-        Console.WriteLine("\nGoodbye!");
-    }
+    //         Console.WriteLine(String.Format(
+    //             LINEPATTERN,
+    //             euDist.pointToString(p1),
+    //             euDist.pointToString(p2),
+    //             Math.Round(euDist.calculateIteratively(p1, p2, numDimensions), 3),
+    //             Math.Round(euDist.calculateRecursively(p1, p2, numDimensions), 3)
+    //             ));
+    //     }
+    //     Console.WriteLine("\nGoodbye!");
+    // }
 }
 
