@@ -40,6 +40,12 @@ class Heap{
         return max;
     }
 
+    public void insert(int v) {
+        Array.Resize(ref H, H.Length + 1);
+        H[H.Length - 1] = v;
+        percolateUp(H.Length - 1);
+    }
+
     private void percolateDown(int k) {
         int v = H[k];
         bool heap = false;
@@ -60,6 +66,21 @@ class Heap{
         H[k] = v;
     }
 
+    private void percolateUp(int k) {
+        int v = H[k];
+        bool heap = false;
+        while(!heap || k != 0) { 
+            int j = (k - 1) / 2;
+            if(v <= H[j]) { // already heap
+                heap = true;
+            } else {
+                H[k] = H[j];
+                H[j] = v;
+                k = j;
+            }
+        }
+    }
+
     private void heapify() {
         int i = (H.Length - 1)/2;
         while(i >= 0) {
@@ -74,6 +95,9 @@ class Homework5 {
         Heap h = new Heap(new int[] {2, 9, 7, 6, 5, 8});
         Console.WriteLine("Heap: " + h.toString());
         Console.WriteLine("Deleted: " + h.delete());
+        Console.WriteLine("Heap: " + h.toString());
+        Console.WriteLine("Inserted: 10");
+        h.insert(10);
         Console.WriteLine("Heap: " + h.toString());
     }
 }
