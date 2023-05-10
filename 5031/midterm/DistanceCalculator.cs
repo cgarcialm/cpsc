@@ -51,7 +51,7 @@ class Point
         string s = "{";
         for (int dim = 0; dim < array.Length; dim++)
         {
-            s += dim + ",";
+            s += array[dim] + ",";
         }
         s = s.Remove(s.Length - 1, 1);
         s += "}";
