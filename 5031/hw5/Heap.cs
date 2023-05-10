@@ -35,14 +35,14 @@ class Heap{
     private void percolateDown(int k) {
         int v = H[k];
         bool heap = false;
-        while(!heap && 2 * k <= H.Length) {
-            int j = 2 * k;
+        while(!heap && 2 * k + 1 <= H.Length - 1) { // there are any children
+            int j = 2 * k + 1;
             if(j < H.Length - 1) { // there are two children
                 if(H[j] < H[j+1]) {
                     j++;
                 }
             }
-            if(v >= H[j]) {
+            if(v >= H[j]) { // already heap
                 heap = true;
             } else {
                 H[k] = H[j];
@@ -53,8 +53,8 @@ class Heap{
     }
 
     private void heapify() {
-        int i = H.Length/2;
-        while(i > 0) {
+        int i = (H.Length - 1)/2;
+        while(i >= 0) {
             percolateDown(i);
             i--;
         }
@@ -63,7 +63,7 @@ class Heap{
 
 class Homework5 {
     static void Main(string[] args) {
-        Heap h = new Heap(new int[] {2, 1, 3});
+        Heap h = new Heap(new int[] {2, 9, 7, 6, 5, 8});
         Console.WriteLine("Heap: " + h.toString());
     }
 }
