@@ -10,4 +10,12 @@ class HeapSort{
             array[i] = anArray[i];
         }
     }
+
+    /// <summary>
+    /// Checks if length of array is 0
+    /// </summary>
+    /// <returns>Boolean indicating if array is empty</returns>
+    public bool empty() {
+        return array.Length == 0;
+    }
 }
