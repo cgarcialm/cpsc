@@ -32,27 +32,30 @@ class Heap{
         return s;
     }
 
+    private void percolateDown(int k) {
+        int v = H[k];
+        bool heap = false;
+        while(!heap && 2 * k <= H.Length) {
+            int j = 2 * k;
+            if(j < H.Length - 1) { // there are two children
+                if(H[j] < H[j+1]) {
+                    j++;
+                }
+            }
+            if(v >= H[j]) {
+                heap = true;
+            } else {
+                H[k] = H[j];
+                k = j;
+            }
+        }
+        H[k] = v;
+    }
+
     private void heapify() {
         int i = H.Length/2;
         while(i > 0) {
-            int k = i;
-            int v = H[k];
-            bool heap = false;
-            while(!heap && 2 * k <= H.Length) {
-                int j = 2 * k;
-                if(j < H.Length - 1) { // there are two children
-                    if(H[j] < H[j+1]) {
-                        j++;
-                    }
-                }
-                if(v >= H[j]) {
-                    heap = true;
-                } else {
-                    H[k] = H[j];
-                    k = j;
-                }
-            }
-            H[k] = v;
+            percolateDown(i);
             i--;
         }
     }
