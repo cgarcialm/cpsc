@@ -1,21 +1,66 @@
 ﻿using System;
 
-class HeapSort{
+class Heap{
 
-    int[] array;
+    private int[] H;
 
-    HeapSort(int[] anArray) {
-        array = new int[anArray.Length];
+    public Heap(int[] anArray) {
+        H = new int[anArray.Length];
         for(int i = 0; i < anArray.Length; i++) {
-            array[i] = anArray[i];
+            H[i] = anArray[i];
         }
+        heapify();
     }
 
     /// <summary>
-    /// Checks if length of array is 0
+    /// Checks if length of H is 0
     /// </summary>
-    /// <returns>Boolean indicating if array is empty</returns>
+    /// <returns>Boolean indicating if H is empty</returns>
     public bool empty() {
-        return array.Length == 0;
+        return H.Length == 0;
+    }
+
+    public string toString()
+    {
+        string s = "{";
+        for (int i = 0; i < H.Length; i++)
+        {
+            s += H[i] + ",";
+        }
+        s = s.Remove(s.Length - 1, 1);
+        s += "}";
+        return s;
+    }
+
+    private void heapify() {
+        int i = H.Length/2;
+        while(i > 0) {
+            int k = i;
+            int v = H[k];
+            bool heap = false;
+            while(!heap && 2 * k <= H.Length) {
+                int j = 2 * k;
+                if(j < H.Length - 1) { // there are two children
+                    if(H[j] < H[j+1]) {
+                        j++;
+                    }
+                }
+                if(v >= H[j]) {
+                    heap = true;
+                } else {
+                    H[k] = H[j];
+                    k = j;
+                }
+            }
+            H[k] = v;
+            i--;
+        }
+    }
+}
+
+class Homework5 {
+    static void Main(string[] args) {
+        Heap h = new Heap(new int[] {2, 1, 3});
+        Console.WriteLine("Heap: " + h.toString());
     }
 }
