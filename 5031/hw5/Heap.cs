@@ -32,6 +32,14 @@ class Heap{
         return s;
     }
 
+    public int delete() {
+        int max = H[0];
+        H[0] = H[H.Length - 1];
+        Array.Resize(ref H, H.Length - 1);
+        heapify();
+        return max;
+    }
+
     private void percolateDown(int k) {
         int v = H[k];
         bool heap = false;
@@ -64,6 +72,8 @@ class Heap{
 class Homework5 {
     static void Main(string[] args) {
         Heap h = new Heap(new int[] {2, 9, 7, 6, 5, 8});
+        Console.WriteLine("Heap: " + h.toString());
+        Console.WriteLine("Deleted: " + h.delete());
         Console.WriteLine("Heap: " + h.toString());
     }
 }
