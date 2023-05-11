@@ -4,9 +4,9 @@
  * Date: May 10 2023
  * Platform: MacOS Monterrey. Version 12.0.1.
  * Version: 1.0
- * Purpose: Implementation of HeapSort.
+ * Purpose: Implementation of unsortedArraysort.
 
-Implementation of HeapSort per the algorithm described in the book "Introduction
+Implementation of unsortedArraysort per the algorithm described in the book "Introduction
 to The Design and Analysis of Algorithms" by Anany Levitin, 3rd edition, to sort 
 an array in ascending order.
 
@@ -18,10 +18,10 @@ using System;
 /// Class Heap implements a binary tree that always mantains the following 
 /// properties:
 ///     1. It is complete
-///     2. It satisfies heap-order property: Data in each node >= data in 
+///     2. It satisfies heap-order property: Data in each node <= data in 
 ///     children
 /// </summary>
-class Heap{
+class MinHeap{
 
     private int[] H;
 
@@ -30,7 +30,7 @@ class Heap{
     /// construction
     /// </summary>
     /// <param name="anArray">Array of ints to create heap</param>
-    public Heap(int[] anArray) {
+    public MinHeap(int[] anArray) {
         H = new int[anArray.Length];
         for(int i = 0; i < anArray.Length; i++) {
             H[i] = anArray[i];
@@ -47,33 +47,17 @@ class Heap{
     }
 
     /// <summary>
-    /// Generates string represatation of heap
+    /// Retrieves the min item
     /// </summary>
-    /// <returns></returns>
-    public string toString()
-    {
-        string s = "{";
-        for (int i = 0; i < H.Length; i++)
-        {
-            s += H[i] + ",";
-        }
-        s = s.Remove(s.Length - 1, 1);
-        s += "}";
-        return s;
-    }
-
-    /// <summary>
-    /// Retrieves the max item
-    /// </summary>
-    /// <returns>Max item</returns>
-    public int getMax() {
+    /// <returns>Min item</returns>
+    public int getMin() {
         return H[0];
     }
 
     /// <summary>
-    /// Deletes the max item
+    /// Deletes the min item
     /// </summary>
-    /// <returns>Max item</returns>
+    /// <returns>Min item</returns>
     public int delete() {
         int max = H[0];
         H[0] = H[H.Length - 1];
@@ -93,7 +77,7 @@ class Heap{
     }
 
     /// <summary>
-    /// Generates sorted array from heap
+    /// Generates ascending sorted array from heap
     /// </summary>
     /// <returns>Sorted array of ints</returns>
     public int[] sort() {
@@ -106,7 +90,7 @@ class Heap{
     }
 
     /// <summary>
-    /// Swaps node k with the biggest of its children until array is in heap 
+    /// Swaps node k with the smallest of its children until array is in heap 
     /// order
     /// </summary>
     /// <param name="k">Index of element to percolate</param>
@@ -116,11 +100,11 @@ class Heap{
         while(!heap && 2 * k + 1 <= H.Length - 1) { // there are any children
             int j = 2 * k + 1;
             if(j < H.Length - 1) { // there are two children
-                if(H[j] < H[j+1]) {
+                if(H[j] > H[j+1]) {
                     j++;
                 }
             }
-            if(v >= H[j]) { // already heap
+            if(v <= H[j]) { // already heap
                 heap = true;
             } else {
                 H[k] = H[j];
@@ -139,7 +123,7 @@ class Heap{
         bool heap = false;
         while(!heap || k != 0) { 
             int j = (k - 1) / 2;
-            if(v <= H[j]) { // already heap
+            if(v >= H[j]) { // already heap
                 heap = true;
             } else {
                 H[k] = H[j];
@@ -167,18 +151,45 @@ class Heap{
 /// Class Homework 5 tests the implementation of Heap.
 /// </summary>
 class Homework5 {
+
     /// <summary>
-    /// The main entry point of the program.
+    /// Generates string represatation of an array
+    /// </summary>
+    /// <param name="anArray">Array if ints to represent</param>
+    /// <returns>String representation of anArray</returns>
+    static string toString(int[] anArray)
+    {
+        string s = "{";
+        for (int i = 0; i < anArray.Length; i++)
+        {
+            s += anArray[i] + ",";
+        }
+        if (s[s.Length - 1] == ',') {
+            s = s.Remove(s.Length - 1, 1);
+        }
+        s += "}";
+        return s;
+    }
+
+    /// <summary>
+    /// The main entry point of the program. Creates list of arrays for 
+    /// testing HeapSort. Prints unsorted and sorted array.
     /// </summary>
     /// <param name="args"></param>
     static void Main(string[] args) {
-        Heap h = new Heap(new int[] {2, 9, 7, 6, 5, 8});
-        Console.WriteLine("Heap: " + h.toString());
-        Console.WriteLine("Deleted: " + h.delete());
-        Console.WriteLine("Heap: " + h.toString());
-        Console.WriteLine("Inserted: 10");
-        h.insert(10);
-        Console.WriteLine("Heap: " + h.toString());
-        int[] sorted = h.sort();
+
+        List<int[]> unsortedArrays = new List<int[]>();
+        unsortedArrays.Add(new int[] {});
+        unsortedArrays.Add(new int[] {1, 2, 3});
+        unsortedArrays.Add(new int[] {1, 2, 3, 4});
+        unsortedArrays.Add(new int[] {3, 1, 4, 1, 5, 9, 2, 6, 5});
+        unsortedArrays.Add(new int[] {9, 8, 7, 6, 5, 4, 3, 2, 1, 0});
+
+        foreach(int[] arr in unsortedArrays) {
+            Console.WriteLine("Unsorted array: " + toString(arr));
+            MinHeap minH = new MinHeap(arr);
+            int[] sorted = minH.sort();
+            Console.WriteLine("Sorted array: " + toString(sorted));
+        }
     }
 }
