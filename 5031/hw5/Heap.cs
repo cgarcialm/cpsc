@@ -13,12 +13,13 @@ edition, to sort an array in ascending order.
 *******************************************************************************/
 
 using System;
+using System.Collections.Generic;
 
 /// <summary>
 /// Class Heap implements a binary tree that always mantains the following 
 /// properties:
 ///     1. It is complete
-///     2. It satisfies heap-order property: Data in each node <= data in 
+///     2. It satisfies heap-order property: Value in each node <= value in 
 ///     children
 /// </summary>
 class MinHeap
@@ -211,10 +212,10 @@ class Homework5
 
         List<int[]> unsortedArrays = new List<int[]>();
         unsortedArrays.Add(new int[] { });
-        unsortedArrays.Add(new int[] { 1, 2, 3 });
+        unsortedArrays.Add(new int[] { 1 });
         unsortedArrays.Add(new int[] { 1, 2, 3, 4 });
+        unsortedArrays.Add(new int[] { 4, 3, 2, 1, 0 });
         unsortedArrays.Add(new int[] { 3, 1, 4, 1, 5, 9, 2, 6, 5 });
-        unsortedArrays.Add(new int[] { 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 });
 
         for (int i = 0; i < unsortedArrays.Count; i++)
         {
@@ -222,7 +223,7 @@ class Homework5
             int[] sorted = minH.sort();
             Console.WriteLine(String.Format(
                 LINEPATTERN,
-                i,
+                i+1,
                 toString(unsortedArrays[i]),
                 toString(sorted)
                 ));
