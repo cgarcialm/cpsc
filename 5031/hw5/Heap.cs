@@ -6,9 +6,9 @@
  * Version: 1.0
  * Purpose: Implementation of unsortedArraysort.
 
-Implementation of unsortedArraysort per the algorithm described in the book "Introduction
-to The Design and Analysis of Algorithms" by Anany Levitin, 3rd edition, to sort 
-an array in ascending order.
+Implementation of unsortedArraysort per the algorithm described in the book 
+"Introduction to The Design and Analysis of Algorithms" by Anany Levitin, 3rd 
+edition, to sort an array in ascending order.
 
 *******************************************************************************/
 
@@ -21,7 +21,8 @@ using System;
 ///     2. It satisfies heap-order property: Data in each node <= data in 
 ///     children
 /// </summary>
-class MinHeap{
+class MinHeap
+{
 
     private int[] H;
 
@@ -30,9 +31,11 @@ class MinHeap{
     /// construction
     /// </summary>
     /// <param name="anArray">Array of ints to create heap</param>
-    public MinHeap(int[] anArray) {
+    public MinHeap(int[] anArray)
+    {
         H = new int[anArray.Length];
-        for(int i = 0; i < anArray.Length; i++) {
+        for (int i = 0; i < anArray.Length; i++)
+        {
             H[i] = anArray[i];
         }
         heapify();
@@ -42,7 +45,8 @@ class MinHeap{
     /// Checks if length of heap is 0
     /// </summary>
     /// <returns>Boolean indicating if heap is empty</returns>
-    public bool empty() {
+    public bool empty()
+    {
         return H.Length == 0;
     }
 
@@ -50,7 +54,8 @@ class MinHeap{
     /// Retrieves the min item
     /// </summary>
     /// <returns>Min item</returns>
-    public int getMin() {
+    public int getMin()
+    {
         return H[0];
     }
 
@@ -58,7 +63,8 @@ class MinHeap{
     /// Deletes the min item
     /// </summary>
     /// <returns>Min item</returns>
-    public int delete() {
+    public int delete()
+    {
         int max = H[0];
         H[0] = H[H.Length - 1];
         Array.Resize(ref H, H.Length - 1);
@@ -70,7 +76,8 @@ class MinHeap{
     /// Insert value to heap
     /// </summary>
     /// <param name="v">Value to insert</param>
-    public void insert(int v) {
+    public void insert(int v)
+    {
         Array.Resize(ref H, H.Length + 1);
         H[H.Length - 1] = v;
         percolateUp(H.Length - 1);
@@ -80,10 +87,12 @@ class MinHeap{
     /// Generates ascending sorted array from heap
     /// </summary>
     /// <returns>Sorted array of ints</returns>
-    public int[] sort() {
+    public int[] sort()
+    {
         int initLength = H.Length;
         int[] sortedArray = new int[initLength];
-        for(int i = 0; i < initLength; i++) {
+        for (int i = 0; i < initLength; i++)
+        {
             sortedArray[i] = delete();
         }
         return sortedArray;
@@ -94,19 +103,26 @@ class MinHeap{
     /// order
     /// </summary>
     /// <param name="k">Index of element to percolate</param>
-    private void percolateDown(int k) {
+    private void percolateDown(int k)
+    {
         int v = H[k];
         bool heap = false;
-        while(!heap && 2 * k + 1 <= H.Length - 1) { // there are any children
+        while (!heap && 2 * k + 1 <= H.Length - 1)
+        { // there are any children
             int j = 2 * k + 1;
-            if(j < H.Length - 1) { // there are two children
-                if(H[j] > H[j+1]) {
+            if (j < H.Length - 1)
+            { // there are two children
+                if (H[j] > H[j + 1])
+                {
                     j++;
                 }
             }
-            if(v <= H[j]) { // already heap
+            if (v <= H[j])
+            { // already heap
                 heap = true;
-            } else {
+            }
+            else
+            {
                 H[k] = H[j];
                 k = j;
             }
@@ -118,14 +134,19 @@ class MinHeap{
     /// Swaps node k with its parent until array is in heap order
     /// </summary>
     /// <param name="k">Index of element to percolate</param>
-    private void percolateUp(int k) {
+    private void percolateUp(int k)
+    {
         int v = H[k];
         bool heap = false;
-        while(!heap || k != 0) { 
+        while (!heap || k != 0)
+        {
             int j = (k - 1) / 2;
-            if(v >= H[j]) { // already heap
+            if (v >= H[j])
+            { // already heap
                 heap = true;
-            } else {
+            }
+            else
+            {
                 H[k] = H[j];
                 H[j] = v;
                 k = j;
@@ -136,10 +157,13 @@ class MinHeap{
     /// <summary>
     /// Rearranges array H to put it in heap order
     /// </summary>
-    private void heapify() {
-        if(H.Length > 1) {
-            int i = (H.Length - 1)/2;
-            while(i >= 0) {
+    private void heapify()
+    {
+        if (H.Length > 1)
+        {
+            int i = (H.Length - 1) / 2;
+            while (i >= 0)
+            {
                 percolateDown(i);
                 i--;
             }
@@ -150,7 +174,8 @@ class MinHeap{
 /// <summary>
 /// Class Homework 5 tests the implementation of Heap.
 /// </summary>
-class Homework5 {
+class Homework5
+{
 
     /// <summary>
     /// Generates string represatation of an array
@@ -164,7 +189,8 @@ class Homework5 {
         {
             s += anArray[i] + ",";
         }
-        if (s[s.Length - 1] == ',') {
+        if (s[s.Length - 1] == ',')
+        {
             s = s.Remove(s.Length - 1, 1);
         }
         s += "}";
@@ -176,16 +202,18 @@ class Homework5 {
     /// testing HeapSort. Prints unsorted and sorted array.
     /// </summary>
     /// <param name="args"></param>
-    static void Main(string[] args) {
+    static void Main(string[] args)
+    {
 
         List<int[]> unsortedArrays = new List<int[]>();
-        unsortedArrays.Add(new int[] {});
-        unsortedArrays.Add(new int[] {1, 2, 3});
-        unsortedArrays.Add(new int[] {1, 2, 3, 4});
-        unsortedArrays.Add(new int[] {3, 1, 4, 1, 5, 9, 2, 6, 5});
-        unsortedArrays.Add(new int[] {9, 8, 7, 6, 5, 4, 3, 2, 1, 0});
+        unsortedArrays.Add(new int[] { });
+        unsortedArrays.Add(new int[] { 1, 2, 3 });
+        unsortedArrays.Add(new int[] { 1, 2, 3, 4 });
+        unsortedArrays.Add(new int[] { 3, 1, 4, 1, 5, 9, 2, 6, 5 });
+        unsortedArrays.Add(new int[] { 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 });
 
-        foreach(int[] arr in unsortedArrays) {
+        foreach (int[] arr in unsortedArrays)
+        {
             Console.WriteLine("Unsorted array: " + toString(arr));
             MinHeap minH = new MinHeap(arr);
             int[] sorted = minH.sort();
