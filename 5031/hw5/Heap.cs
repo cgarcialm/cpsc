@@ -204,6 +204,10 @@ class Homework5
     /// <param name="args"></param>
     static void Main(string[] args)
     {
+        const string LINEPATTERN = "|{0,5}|{1,25}|{2,25}|";
+        Console.WriteLine("Welcome to the HeapSort.\n");
+        Console.WriteLine(String.Format(LINEPATTERN, "Test", "Unsorted array", "Sorted array"));
+        Console.WriteLine("+-----+-------------------------+-------------------------+");
 
         List<int[]> unsortedArrays = new List<int[]>();
         unsortedArrays.Add(new int[] { });
@@ -212,12 +216,17 @@ class Homework5
         unsortedArrays.Add(new int[] { 3, 1, 4, 1, 5, 9, 2, 6, 5 });
         unsortedArrays.Add(new int[] { 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 });
 
-        foreach (int[] arr in unsortedArrays)
+        for (int i = 0; i < unsortedArrays.Count; i++)
         {
-            Console.WriteLine("Unsorted array: " + toString(arr));
-            MinHeap minH = new MinHeap(arr);
+            MinHeap minH = new MinHeap(unsortedArrays[i]);
             int[] sorted = minH.sort();
-            Console.WriteLine("Sorted array: " + toString(sorted));
+            Console.WriteLine(String.Format(
+                LINEPATTERN,
+                i,
+                toString(unsortedArrays[i]),
+                toString(sorted)
+                ));
         }
+        Console.WriteLine("\nGoodbye!");
     }
 }
