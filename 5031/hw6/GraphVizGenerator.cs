@@ -5,6 +5,7 @@ class GraphVizGenerator {
 
     string fileName;
     int nodes;
+    bool isSymmetric = true;
     int[,] array;
     string dotString;
 
@@ -12,6 +13,7 @@ class GraphVizGenerator {
         this.fileName = fileName; // TODO: check if txt
         to2DArray();
         createDotString();
+        isMatrixSymmetric();
     }
 
     private void to2DArray() {
@@ -24,6 +26,17 @@ class GraphVizGenerator {
             string[] stringCols = stringRows[i].Split('\t');
             for(int j = 0; j < nodes; j++) {
                 array[i, j] = Int32.Parse(stringCols[j]); // TODO: check if int
+            }
+        }
+    }
+
+    private void isMatrixSymmetric() {
+        for(int i = 0; i < nodes; i++) {
+            for(int j = i + 1; j < nodes; j++) {
+                if(array[i, j] != array[j, i]) {
+                    isSymmetric = false;
+                    break;
+                }
             }
         }
     }
