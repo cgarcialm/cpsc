@@ -5,21 +5,21 @@ class GraphVizGenerator {
 
     string fileName;
     int nodes;
-    bool isSymmetric = true;
+    bool symmetric = true;
     int[,] array;
     string dotString;
 
     public GraphVizGenerator(string fileName) {
         this.fileName = fileName; // TODO: check if txt
         to2DArray();
-        createDotString();
         isMatrixSymmetric();
+        createDotString();
     }
 
     private void to2DArray() {
-        string input = File.ReadAllText("input/" + fileName);
-        string[] stringRows = input.Split('\n');
-        nodes = stringRows.Length - 1;
+        string input = File.ReadAllText("input/" + fileName).Trim('\r', '\n');
+        string[] stringRows = input.Split('\n'); 
+        nodes = stringRows.Length;
 
         array = new int[nodes, nodes];
         for(int i = 0; i < nodes; i++) {
@@ -34,7 +34,7 @@ class GraphVizGenerator {
         for(int i = 0; i < nodes; i++) {
             for(int j = i + 1; j < nodes; j++) {
                 if(array[i, j] != array[j, i]) {
-                    isSymmetric = false;
+                    symmetric = false;
                     break;
                 }
             }
@@ -42,12 +42,22 @@ class GraphVizGenerator {
     }
 
     private void createDotString() {
-        dotString = "digraph { \n";
+        dotString = symmetric ? "graph { \n" : "digraph { \n";
+        string edge = symmetric ? "--" : "->";
         char[] az = Enumerable.Range('a', array.Length).Select(i => (Char)i).ToArray();
+
         for (int i = 0; i < nodes; i++) {
-            for (int j = 0; j < nodes; j++) {
-                if (array[i, j] == 1) {
-                    dotString += az[i] + "->" + az[j] + "\n";
+            if (symmetric) {
+                for (int j = i; j < nodes; j++) {
+                    if (array[i, j] == 1) {
+                        dotString += az[i] + edge + az[j] + "\n";
+                    }
+                }
+            } else {
+                for (int j = 0; j < nodes; j++) {
+                    if (array[i, j] == 1) {
+                        dotString += az[i] + edge + az[j] + "\n";
+                    }
                 }
             }
         }
@@ -63,8 +73,6 @@ class GraphVizGenerator {
 
     public string generate()
     {
-        // according to: https://stackoverflow.com/a/15262019/637142
-        // thans to this we will pass everything as one command
         string command = createShellCommand().Replace("\"","\"\"");
 
         var proc = new Process {
