@@ -4,9 +4,9 @@
  * Date: May 10 2023
  * Platform: MacOS Monterrey. Version 12.0.1.
  * Version: 1.0
- * Purpose: Implementation of unsortedArraysort.
+ * Purpose: Implementation of HeapSort.
 
-Implementation of unsortedArraysort per the algorithm described in the book 
+Implementation of HeapSort per the algorithm described in the book 
 "Introduction to The Design and Analysis of Algorithms" by Anany Levitin, 3rd 
 edition, to sort an array in ascending order.
 
@@ -16,7 +16,7 @@ using System;
 using System.Collections.Generic;
 
 /// <summary>
-/// Class Heap implements a binary tree that always mantains the following 
+/// Class MinHeap implements a binary tree that always mantains the following 
 /// properties:
 ///     1. It is complete
 ///     2. It satisfies heap-order property: Value in each node <= value in 
@@ -74,7 +74,7 @@ class MinHeap
     }
 
     /// <summary>
-    /// Insert value to heap
+    /// Inserts value to heap
     /// </summary>
     /// <param name="v">Value to insert</param>
     public void insert(int v)
@@ -100,7 +100,8 @@ class MinHeap
     }
 
     /// <summary>
-    /// Swaps node k with the smallest of its children until array is in heap 
+    /// Swaps node k with the smallest of its children and percolates down
+    /// until array is in heap order
     /// order
     /// </summary>
     /// <param name="k">Index of element to percolate</param>
@@ -132,7 +133,8 @@ class MinHeap
     }
 
     /// <summary>
-    /// Swaps node k with its parent until array is in heap order
+    /// Swaps node k with its parent and percolates up until array 
+    /// is in heap order
     /// </summary>
     /// <param name="k">Index of element to percolate</param>
     private void percolateUp(int k)
@@ -173,7 +175,7 @@ class MinHeap
 }
 
 /// <summary>
-/// Class Homework 5 tests the implementation of Heap.
+/// Class Homework 5 tests the implementation of MinHeap.
 /// </summary>
 class Homework5
 {
@@ -214,8 +216,9 @@ class Homework5
         unsortedArrays.Add(new int[] { });
         unsortedArrays.Add(new int[] { 1 });
         unsortedArrays.Add(new int[] { 1, 2, 3, 4 });
-        unsortedArrays.Add(new int[] { 4, 3, 2, 1, 0 });
+        unsortedArrays.Add(new int[] { 4, 3, 2, 1 });
         unsortedArrays.Add(new int[] { 3, 1, 4, 1, 5, 9, 2, 6, 5 });
+        unsortedArrays.Add(new int[] { 3, 1, 4, 1, 5, 9, 2, 6 });
 
         for (int i = 0; i < unsortedArrays.Count; i++)
         {
