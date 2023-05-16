@@ -41,7 +41,7 @@ class GraphVizGenerator {
         dotString += " }";
     }
 
-    public string createShellCommand() {
+    private string createShellCommand() {
         string strCmdText = "echo '" + dotString + "' | dot -Tpng > output/" + fileName.Substring(0, fileName.LastIndexOf(".txt")) + ".png";
         File.WriteAllText("output/" + fileName , strCmdText);
 
