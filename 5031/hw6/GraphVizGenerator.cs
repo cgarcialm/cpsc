@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Diagnostics;
 
-class MatrixReader {
+class GraphVizGenerator {
 
     string fileName;
     int nodes;
     int[,] array;
     string dotString;
 
-    public MatrixReader(string fileName) {
+    public GraphVizGenerator(string fileName) {
         this.fileName = fileName; // TODO: check if txt
         to2DArray();
         createDotString();
@@ -48,7 +48,7 @@ class MatrixReader {
         return strCmdText;
     }
 
-    public string generateGraphViz()
+    public string generate()
     {
         // according to: https://stackoverflow.com/a/15262019/637142
         // thans to this we will pass everything as one command
@@ -80,8 +80,8 @@ class Homework6 {
         List<string> testInputs = new List<string> {"adj1.txt", "adj2.txt", "adj3.txt", "adj4.txt"};
 
         foreach(string testInput in testInputs) {
-            MatrixReader mr = new MatrixReader(testInput);
-            mr.generateGraphViz();
+            GraphVizGenerator mr = new GraphVizGenerator(testInput);
+            mr.generate();
         }
     }
 }
