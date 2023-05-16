@@ -43,6 +43,7 @@ class MatrixReader {
 
     public string createShellCommand() {
         string strCmdText = "echo '" + dotString + "' | dot -Tpng > output/" + fileName.Substring(0, fileName.LastIndexOf(".txt")) + ".png";
+        File.WriteAllText("output/" + fileName , strCmdText);
 
         return strCmdText;
     }
@@ -75,7 +76,12 @@ class MatrixReader {
 class Homework6 {
 
     static void Main(string[] args) {
-        MatrixReader mr = new MatrixReader("test.txt");
-        mr.generateGraphViz();
+
+        List<string> testInputs = new List<string> {"adj1.txt", "adj2.txt", "adj3.txt", "adj4.txt"};
+
+        foreach(string testInput in testInputs) {
+            MatrixReader mr = new MatrixReader(testInput);
+            mr.generateGraphViz();
+        }
     }
 }
