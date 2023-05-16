@@ -40,11 +40,42 @@ class MatrixReader {
         }
         dotString += " }";
     }
+
+    public string createShellCommand() {
+        string strCmdText = "echo '" + dotString + "' | dot -Tpng > output/" + fileName.Substring(0, fileName.LastIndexOf(".txt")) + ".png";
+
+        return strCmdText;
+    }
+
+    public string generateGraphViz()
+    {
+        // according to: https://stackoverflow.com/a/15262019/637142
+        // thans to this we will pass everything as one command
+        string command = createShellCommand().Replace("\"","\"\"");
+
+        var proc = new Process {
+            StartInfo = new ProcessStartInfo
+            {
+                FileName = "/bin/bash",
+                Arguments = "-c \""+ command + "\"",
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                CreateNoWindow = true
+            }
+        };
+
+        proc.Start();
+        proc.WaitForExit();
+
+        return proc.StandardOutput.ReadToEnd();
+    }
+    
 }
 
 class Homework6 {
 
     static void Main(string[] args) {
-        MatrixReader mr = new MatrixReader("adj3.txt");
+        MatrixReader mr = new MatrixReader("test.txt");
+        mr.generateGraphViz();
     }
 }
