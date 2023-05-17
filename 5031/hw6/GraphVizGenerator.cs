@@ -6,9 +6,10 @@
  * Version: 1.0
  * Purpose: Implementation of GraphVizGenerator program.
 
-Welcome to GraphVizGenerator. GraphVizGenerator is a program that takes a text 
-input with a matrix and uses GraphViz toolkit to create a diagram of the graph 
-that it represents.
+Welcome to GraphVizGenerator. 
+GraphVizGenerator is a program that takes a text input with a matrix and uses 
+GraphViz toolkit to create a diagram of the graph that it represents.
+Main executes GraphVizGenerator both for a set of sample inputs and test inputs.
 
 *******************************************************************************/
 
