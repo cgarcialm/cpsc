@@ -58,7 +58,7 @@ class GraphVizGenerator {
         string[] stringRows = input.Split('\n'); 
         nodes = stringRows.Length;
         if(nodes<2) {
-            throw new MatrixException("Matrix should have at least 2 nodes");
+            throw new MatrixException("Matrix must have at least 2 nodes");
         }
 
         array = new int[nodes, nodes];
@@ -67,11 +67,11 @@ class GraphVizGenerator {
         for(int i = 0; i < nodes; i++) {
             string[] stringCols = stringRows[i].Replace("    ", "\t").Split('\t');
             if(stringCols.Length != nodes) {
-                throw new MatrixException("Matrix in input " + fileName + " must be square.");
+                throw new MatrixException("Matrix must be square.");
             }
             for(int j = 0; j < nodes; j++) {
                 if(stringCols[j] != "0" && stringCols[j] != "1") {
-                    throw new MatrixException("Value \"" + stringCols[j] + "\" in matrix must be 0 or 1.");
+                    throw new MatrixException("All values in matrix must be 0 or 1.");
                 }
                 array[i, j] = Int32.Parse(stringCols[j]);
                 if(i != j) {
@@ -80,7 +80,7 @@ class GraphVizGenerator {
             }
         }
         if(totalEdgesBtwNodes == 0) {
-            throw new MatrixException("Matrix in input " + fileName + " must have at least one edge between different nodes.");
+            throw new MatrixException("Matrix must have at least one edge between different nodes.");
         }
     }
 
@@ -182,18 +182,31 @@ class Homework6 {
         }
         List<bool> expectedToBreak  = new List<bool> {false, false, false, true, true, true, true, false};
 
+        Console.WriteLine("Welcome to the GraphViz Generator.\n");
+        const string LINEPATTERN = "|{0,5}|{1,10}|{2,10}|{3,40}|";
+        Console.WriteLine(String.Format(LINEPATTERN, "Test", "File Name", "Exception", "Output"));
+        Console.WriteLine("+"+new string('-', 5)+"+"+new string('-', 10)+"+"+new string('-', 10)+"+"+new string('-', 40)+"+");
+
         List<string> outputs = new List<string>();
         for(int i = 0; i < testInputs.Count; i++) {
             if(expectedToBreak[i]) {
                 try{
                     runOnInputsList(testInputs[i]);
                 } catch (MatrixException e) {
-                    outputs.Add(e.ToString());
+                    outputs.Add(e.ToString().Substring(17, e.ToString().Length-17).Replace("\n", ""));
                 }
             } else {
-                outputs.Add(runOnInputsList(testInputs[i]));
+                outputs.Add(runOnInputsList(testInputs[i]).Replace("\n", " "));
             }
+            Console.WriteLine(String.Format(
+                LINEPATTERN,
+                i+1,
+                testInputs[i],
+                expectedToBreak[i],
+                outputs[i].Length > 40 ? outputs[i].Substring(0, 36) + "..." : outputs[i]
+            ));
         }
+        Console.WriteLine("\nGoodbye!");
     }
 
     /// <summary>
