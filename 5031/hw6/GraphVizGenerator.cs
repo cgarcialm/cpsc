@@ -1,6 +1,16 @@
 ﻿using System;
 using System.Diagnostics;
 
+class MatrixException : Exception {
+    public MatrixException()
+    {
+    }
+    public MatrixException(string message)
+        : base(message)
+    {
+    }
+}
+
 class GraphVizGenerator {
 
     string fileName;
@@ -10,7 +20,7 @@ class GraphVizGenerator {
     string dotString;
 
     public GraphVizGenerator(string fileName) {
-        this.fileName = fileName; // TODO: check if txt
+        this.fileName = fileName;
         to2DArray();
         isMatrixSymmetric();
         createDotString();
@@ -22,10 +32,18 @@ class GraphVizGenerator {
         nodes = stringRows.Length;
 
         array = new int[nodes, nodes];
+        
         for(int i = 0; i < nodes; i++) {
             string[] stringCols = stringRows[i].Split('\t');
+            if(stringCols.Length != nodes) {
+                throw new MatrixException("Matrix in input " + fileName + " should be square.");
+            }
             for(int j = 0; j < nodes; j++) {
-                array[i, j] = Int32.Parse(stringCols[j]); // TODO: check if int
+                try {
+                    array[i, j] = Int32.Parse(stringCols[j]);
+                } catch (Exception e) {
+                    throw new MatrixException("Value \"" + stringCols[j] + "\" is not an integer.");
+                }
             }
         }
     }
@@ -65,7 +83,7 @@ class GraphVizGenerator {
     }
 
     private string createShellCommand() {
-        string strCmdText = "echo '" + dotString + "' | dot -Tpng > output/" + fileName.Substring(0, fileName.LastIndexOf(".txt")) + ".png";
+        string strCmdText = "echo '" + dotString + "' | dot -Tpng > output/" + fileName.Substring(0, fileName.LastIndexOf(".")) + ".png";
         File.WriteAllText("output/" + fileName , strCmdText);
 
         return strCmdText;
@@ -100,8 +118,8 @@ class Homework6 {
 
         List<string> testInputs = new List<string> {"adj1.txt", "adj2.txt", "adj3.txt", "adj4.txt"};
 
-        foreach(string testInput in testInputs) {
-            GraphVizGenerator mr = new GraphVizGenerator(testInput);
+        foreach(string input in testInputs) {
+            GraphVizGenerator mr = new GraphVizGenerator(input);
             mr.generate();
         }
     }
