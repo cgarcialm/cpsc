@@ -123,7 +123,6 @@ class GraphVizGenerator {
     /// <returns></returns>
     private string createShellCommand() {
         string strCmdText = "echo '" + dotGraphString + "' | dot -Tpng > output/" + fileName.Substring(0, fileName.LastIndexOf(".")) + ".png";
-        File.WriteAllText("output/" + fileName , strCmdText); // TODO: Drop this export
 
         return strCmdText;
     }
