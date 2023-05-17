@@ -42,6 +42,10 @@ class GraphVizGenerator {
     int[,] array;
     string dotGraphString;
 
+    /// <summary>
+    /// Constructor of GraphVizGenerator
+    /// </summary>
+    /// <param name="fileName">Name of text file that must be in input folder</param>
     public GraphVizGenerator(string fileName) {
         this.fileName = fileName;
         to2DArray();
@@ -164,16 +168,34 @@ class GraphVizGenerator {
 }
 
 /// <summary>
-/// Homework6 runs GraphVizGenerator on a set of inputs stored in List testInputs.
+/// Homework6 runs GraphVizGenerator on a set of sample inputs and test inputs.
 /// </summary>
 class Homework6 {
 
+    /// <summary>
+    /// Runs GraphVizGenerator on fiven input file.
+    /// </summary>
+    /// <param name="fileName">Name of text file that must be in input folder</param>
+    /// <returns></returns>
     static string runOnInputsList(string fileName) {
         GraphVizGenerator mr = new GraphVizGenerator(fileName);
         
         return mr.run();
     }
 
+    /// <summary>
+    /// Runs GraphVizGenerator for sample files.
+    /// </summary>
+    static void runSampleInputs() {
+        List<string> sampleInputs = new List<string> {"adj1.txt", "adj2.txt", "adj3.txt", "adj4.txt"};
+        foreach(string input in sampleInputs) {
+            runOnInputsList(input);
+        }
+    }
+
+    /// <summary>
+    /// Runs GraphVizGenerator for test files and prints into console the output of each test.
+    /// </summary>
     static void runTests() {
         const int NTESTS = 8;
         List<string> testInputs = new List<string>();
@@ -210,16 +232,12 @@ class Homework6 {
     }
 
     /// <summary>
-    /// Main entry of the program. Creates a List of input file names and generates 
+    /// Main entry of the program. Runs GraphVizGenerator on sample inputs and test inputs.
     /// its corresponding graph diagrams.
     /// </summary>
     /// <param name="args"></param>
     static void Main(string[] args) {
-        List<string> sampleInputs = new List<string> {"adj1.txt", "adj2.txt", "adj3.txt", "adj4.txt"};
-        foreach(string input in sampleInputs) {
-            runOnInputsList(input);
-        }
-
+        runSampleInputs();
         runTests();
     }
 }
