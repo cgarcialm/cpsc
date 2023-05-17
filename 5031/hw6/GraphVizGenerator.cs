@@ -66,11 +66,10 @@ class GraphVizGenerator {
                 throw new MatrixException("Matrix in input " + fileName + " should be square.");
             }
             for(int j = 0; j < nodes; j++) {
-                try {
-                    array[i, j] = Int32.Parse(stringCols[j]); // TODO: Throw exception if input is not 0 or 1
-                } catch (Exception e) {
-                    throw new MatrixException("Value \"" + stringCols[j] + "\" is not an integer.");
+                if(stringCols[j] != "0" && stringCols[j] != "1") {
+                    throw new MatrixException("Value \"" + stringCols[j] + "\" in matrix must be 0 or 1.");
                 }
+                array[i, j] = Int32.Parse(stringCols[j]);
             }
         }
     }
