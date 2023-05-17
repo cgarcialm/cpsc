@@ -161,7 +161,8 @@ class GraphVizGenerator
     /// <returns></returns>
     private string createShellCommand()
     {
-        string strCmdText = "echo '" + dotGraphString + "' | dot -Tpng > output/" + fileName.Substring(0, fileName.LastIndexOf(".")) + ".png";
+        string strCmdText = "echo '" + dotGraphString + "' | dot -Tpng > output/" 
+                            + fileName.Substring(0, fileName.LastIndexOf(".")) + ".png";
 
         return strCmdText;
     }
@@ -216,7 +217,9 @@ class Homework6
     /// </summary>
     static void runSampleInputs()
     {
-        List<string> sampleInputs = new List<string> { "adj1.txt", "adj2.txt", "adj3.txt", "adj4.txt" };
+        List<string> sampleInputs = new List<string> { 
+            "adj1.txt", "adj2.txt", "adj3.txt", "adj4.txt" 
+            };
         foreach (string input in sampleInputs)
         {
             runOnInputsList(input);
@@ -234,12 +237,15 @@ class Homework6
         {
             testInputs.Add("test" + i + ".txt");
         }
-        List<bool> expectedToBreak = new List<bool> { false, false, false, true, true, true, true, false };
+        List<bool> expectedToBreak = new List<bool> { 
+            false, false, false, true, true, true, true, false 
+            };
 
         Console.WriteLine("Welcome to the GraphViz Generator.\n");
         const string LINEPATTERN = "|{0,5}|{1,10}|{2,10}|{3,40}|";
         Console.WriteLine(String.Format(LINEPATTERN, "Test", "File Name", "Exception", "Output"));
-        Console.WriteLine("+" + new string('-', 5) + "+" + new string('-', 10) + "+" + new string('-', 10) + "+" + new string('-', 40) + "+");
+        Console.WriteLine("+" + new string('-', 5) + "+" + new string('-', 10) + "+" 
+                          + new string('-', 10) + "+" + new string('-', 40) + "+");
 
         List<string> outputs = new List<string>();
         for (int i = 0; i < testInputs.Count; i++)
