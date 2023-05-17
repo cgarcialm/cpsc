@@ -64,15 +64,15 @@ class GraphVizGenerator
     private void to2DArray()
     {
         string input = File.ReadAllText("input/" + fileName).Trim('\r', '\n');
+        if (input == "")
+        {
+            throw new MatrixException("Matrix must not be empty.");
+        }
         string[] stringRows = input.Split('\n');
         nodes = stringRows.Length;
-        if (nodes < 2)
-        {
-            throw new MatrixException("Matrix must have at least 2 nodes");
-        }
 
         array = new int[nodes, nodes];
-        int totalEdgesBtwNodes = 0;
+        int totalEdges = 0;
 
         for (int i = 0; i < nodes; i++)
         {
@@ -88,15 +88,12 @@ class GraphVizGenerator
                     throw new MatrixException("All values in matrix must be 0 or 1.");
                 }
                 array[i, j] = Int32.Parse(stringCols[j]);
-                if (i != j)
-                {
-                    totalEdgesBtwNodes += array[i, j];
-                }
+                totalEdges += array[i, j];
             }
         }
-        if (totalEdgesBtwNodes == 0)
+        if (totalEdges == 0)
         {
-            throw new MatrixException("Matrix must have at least one edge between different nodes.");
+            throw new MatrixException("Matrix must have at least one edge between nodes.");
         }
     }
 
