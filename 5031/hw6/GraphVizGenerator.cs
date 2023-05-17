@@ -57,6 +57,9 @@ class GraphVizGenerator {
         string input = File.ReadAllText("input/" + fileName).Trim('\r', '\n');
         string[] stringRows = input.Split('\n'); 
         nodes = stringRows.Length;
+        if(nodes<2) {
+            throw new MatrixException("Matrix should have at least 2 nodes");
+        }
 
         array = new int[nodes, nodes];
         
