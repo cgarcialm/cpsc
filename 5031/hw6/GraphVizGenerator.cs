@@ -62,18 +62,25 @@ class GraphVizGenerator {
         }
 
         array = new int[nodes, nodes];
+        int totalEdgesBtwNodes = 0;
         
         for(int i = 0; i < nodes; i++) {
             string[] stringCols = stringRows[i].Split('\t');
             if(stringCols.Length != nodes) {
-                throw new MatrixException("Matrix in input " + fileName + " should be square.");
+                throw new MatrixException("Matrix in input " + fileName + " must be square.");
             }
             for(int j = 0; j < nodes; j++) {
                 if(stringCols[j] != "0" && stringCols[j] != "1") {
                     throw new MatrixException("Value \"" + stringCols[j] + "\" in matrix must be 0 or 1.");
                 }
                 array[i, j] = Int32.Parse(stringCols[j]);
+                if(i != j) {
+                    totalEdgesBtwNodes += array[i, j];
+                }
             }
+        }
+        if(totalEdgesBtwNodes == 0) {
+            throw new MatrixException("Matrix in input " + fileName + " must have at least one edge between different nodes.");
         }
     }
 
@@ -134,7 +141,7 @@ class GraphVizGenerator {
     /// Runs GraphVizGenerator: creates shell command and runs it in terminal,
     /// storing png outputs to output folder.
     /// </summary>
-    public void run()
+    public string run()
     {
         string command = createShellCommand().Replace("\"","\"\"");
 
@@ -151,6 +158,8 @@ class GraphVizGenerator {
 
         proc.Start();
         proc.WaitForExit();
+
+        return dotGraphString;
     }
 }
 
@@ -158,17 +167,42 @@ class GraphVizGenerator {
 /// Homework6 runs GraphVizGenerator on a set of inputs stored in List testInputs.
 /// </summary>
 class Homework6 {
+
+    static string runOnInputsList(string fileName) {
+        GraphVizGenerator mr = new GraphVizGenerator(fileName);
+        
+        return mr.run();
+    }
+
+    static void runTests() {
+        List<string> testInputs = new List<string> {"test1.txt", "test2.txt", "test3.txt", "test4.txt", "test5.txt", "test6.txt", "test7.txt"};
+        List<bool> expectedToBreak  = new List<bool> {false, false, false, true, true, true, true};
+        List<string> outputs = new List<string>();
+        
+        for(int i = 0; i < testInputs.Count; i++) {
+            if(expectedToBreak[i]) {
+                try{
+                    runOnInputsList(testInputs[i]);
+                } catch (MatrixException e) {
+                    outputs.Add(e.ToString());
+                }
+            } else {
+                outputs.Add(runOnInputsList(testInputs[i]));
+            }
+        }
+    }
+
     /// <summary>
     /// Main entry of the program. Creates a List of input file names and generates 
     /// its corresponding graph diagrams.
     /// </summary>
     /// <param name="args"></param>
     static void Main(string[] args) {
-        List<string> testInputs = new List<string> {"adj1.txt", "adj2.txt", "adj3.txt", "adj4.txt"};
-
-        foreach(string input in testInputs) {
-            GraphVizGenerator mr = new GraphVizGenerator(input);
-            mr.run();
+        List<string> sampleInputs = new List<string> {"adj1.txt", "adj2.txt", "adj3.txt", "adj4.txt"};
+        foreach(string input in sampleInputs) {
+            runOnInputsList(input);
         }
+
+        runTests();
     }
 }
