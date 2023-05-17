@@ -65,7 +65,7 @@ class GraphVizGenerator {
         int totalEdgesBtwNodes = 0;
         
         for(int i = 0; i < nodes; i++) {
-            string[] stringCols = stringRows[i].Split('\t');
+            string[] stringCols = stringRows[i].Replace("    ", "\t").Split('\t');
             if(stringCols.Length != nodes) {
                 throw new MatrixException("Matrix in input " + fileName + " must be square.");
             }
