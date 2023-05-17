@@ -175,10 +175,14 @@ class Homework6 {
     }
 
     static void runTests() {
-        List<string> testInputs = new List<string> {"test1.txt", "test2.txt", "test3.txt", "test4.txt", "test5.txt", "test6.txt", "test7.txt"};
-        List<bool> expectedToBreak  = new List<bool> {false, false, false, true, true, true, true};
+        const int NTESTS = 8;
+        List<string> testInputs = new List<string>();
+        for(int i = 1; i <= NTESTS; i++) {
+            testInputs.Add("test" + i + ".txt");
+        }
+        List<bool> expectedToBreak  = new List<bool> {false, false, false, true, true, true, true, false};
+
         List<string> outputs = new List<string>();
-        
         for(int i = 0; i < testInputs.Count; i++) {
             if(expectedToBreak[i]) {
                 try{
