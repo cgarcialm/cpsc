@@ -229,14 +229,14 @@ class Homework6
     /// </summary>
     static void runTests()
     {
-        const int NTESTS = 8;
+        const int NTESTS = 9;
         List<string> testInputs = new List<string>();
         for (int i = 1; i <= NTESTS; i++)
         {
             testInputs.Add("test" + i + ".txt");
         }
         List<bool> expectedToBreak = new List<bool> { 
-            false, false, false, true, true, true, true, false 
+            false, false, false, false, true, true, true, true, false 
             };
 
         Console.WriteLine("Welcome to the GraphViz Generator.\n");
