@@ -14,7 +14,10 @@ Main executes GraphVizGenerator both for a set of sample inputs and test inputs.
 *******************************************************************************/
 
 using System;
+using System.IO;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 /// <summary>
 /// MatrixException implements an Exception that prints an error if the input 
@@ -235,9 +238,6 @@ class Homework6
         {
             testInputs.Add("test" + i + ".txt");
         }
-        List<bool> expectedToBreak = new List<bool> { 
-            false, false, false, false, true, true, true, true, false 
-            };
 
         Console.WriteLine("Welcome to the GraphViz Generator.\n");
         const string LINEPATTERN = "|{0,5}|{1,10}|{2,10}|{3,40}|";
@@ -245,29 +245,26 @@ class Homework6
         Console.WriteLine("+" + new string('-', 5) + "+" + new string('-', 10) + "+" 
                           + new string('-', 10) + "+" + new string('-', 40) + "+");
 
+        List<bool> exceptions = new List<bool>();
         List<string> outputs = new List<string>();
         for (int i = 0; i < testInputs.Count; i++)
         {
-            if (expectedToBreak[i])
-            {
-                try
-                {
-                    runOnInputsList(testInputs[i]);
-                }
-                catch (MatrixException e)
-                {
-                    outputs.Add(e.ToString().Substring(17, e.ToString().Length - 17).Replace("\n", ""));
-                }
-            }
-            else
+            try
             {
                 outputs.Add(runOnInputsList(testInputs[i]).Replace("\n", " "));
+                exceptions.Add(false);
             }
+            catch (MatrixException e)
+            {
+                outputs.Add(e.ToString().Substring(17, e.ToString().Length - 17).Replace("\n", ""));
+                exceptions.Add(true);
+            }
+
             Console.WriteLine(String.Format(
                 LINEPATTERN,
                 i + 1,
                 testInputs[i],
-                expectedToBreak[i],
+                exceptions[i],
                 outputs[i].Length > 40 ? outputs[i].Substring(0, 36) + "..." : outputs[i]
             ));
         }
