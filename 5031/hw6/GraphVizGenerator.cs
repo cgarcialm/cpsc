@@ -7,6 +7,15 @@
  * Purpose: Implementation of GraphVizGenerator program.
 
 Welcome to GraphVizGenerator. 
+Please follow the intructions for setup before running the program:
+
+    ========================== INSTRUCTIONS FOR SETUP ==========================
+    1. Create an "input" folder in the same directory level as this program
+    2. Place all input files in input folder (both test files and homework 
+    examples)
+    3. Create an "output" folder in the same directory level as this program
+    ============================================================================
+
 GraphVizGenerator is a program that takes a text input with a matrix and uses 
 GraphViz toolkit to create a diagram of the graph that it represents.
 Main executes GraphVizGenerator both for a set of sample inputs and test inputs.
