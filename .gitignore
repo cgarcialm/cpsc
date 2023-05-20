@@ -3,3 +3,6 @@
 *.csproj
 .vscode
 **/.DS_Store
+*.dSYM
+*.png
+*.zip
