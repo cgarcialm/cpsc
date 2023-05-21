@@ -6,3 +6,7 @@
 *.dSYM
 *.png
 *.zip
+**/a.out
+**/cmake-build-debug
+**/CMakeLists.txt
+**/.idea
