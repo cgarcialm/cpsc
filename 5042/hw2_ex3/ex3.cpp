@@ -11,18 +11,21 @@ int allowedID = 1;
 // Function to calculate the average
 void checkID(int ID)
 {
+    string waitString = "Not thread " + to_string(ID) + "'s turn.\n";
+    string turnString = "Thread " + to_string(ID) + "'s turn!\n";
+    string completedString = "Thread " + to_string(ID) + " completed.\n";;
     int count = 0;
     while(count < 2) {
         if (allowedID != ID) {
-            cout << "Not thread " << ID << "'s turn" << endl;
-            this_thread::sleep_for (chrono::seconds(1));
+            cout << waitString;
+            this_thread::sleep_for(chrono::milliseconds (100));
         } else {
-            cout << "Thread " << ID << "'s turn!" << endl;
+            cout << turnString;
             count++;
             allowedID < 3 ? allowedID++ : allowedID = 1;
         }
     }
-    cout << "Thread " << ID << " completed." << endl;
+    cout << completedString;
 }
 
 // Driver code
