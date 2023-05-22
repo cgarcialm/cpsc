@@ -3,9 +3,11 @@
 // different callables.
 #include <iostream>
 #include <thread>
+#include <mutex>
 #include <chrono>
 using namespace std;
 
+mutex mtx;
 int allowedID = 1;
 
 // Function to calculate the average
@@ -18,11 +20,13 @@ void runner(int ID)
     while(count < 2) {
         if (allowedID != ID) {
             cout << waitString;
-            this_thread::sleep_for(chrono::milliseconds (100));
+            this_thread::sleep_for(chrono::milliseconds (300));
         } else {
             cout << turnString;
+            mtx.lock();
             count++;
             allowedID < 3 ? allowedID++ : allowedID = 1;
+            mtx.unlock();
         }
     }
     cout << completedString;
