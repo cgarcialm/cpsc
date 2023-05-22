@@ -9,7 +9,7 @@ using namespace std;
 int allowedID = 1;
 
 // Function to calculate the average
-void checkID(int ID)
+void runner(int ID)
 {
     string waitString = "Not thread " + to_string(ID) + "'s turn.\n";
     string turnString = "Thread " + to_string(ID) + "'s turn!\n";
@@ -32,9 +32,9 @@ void checkID(int ID)
 int main(int argc, char* argv[])
 {
     // Create a threads and pass the arguments
-    thread thread1(checkID, 1);
-    thread thread2(checkID, 2);
-    thread thread3(checkID, 3);
+    thread thread1(runner, 1);
+    thread thread2(runner, 2);
+    thread thread3(runner, 3);
 
     // Wait for the threads to finish
     thread1.join();
