@@ -46,7 +46,7 @@ struct NumbersToMerge {
 };
 
 void mergeSortedArrays(NumbersToMerge numbers) {
-    sortedArray = new int[numbers.length]; // TODO: Account for odd numbers
+    sortedArray = new int[numbers.length];
     int i = 0, j = numbers.length/2, k = 0;
     while(i < numbers.length/2 && j < numbers.length) {
         if(numbers.array[i] <= numbers.array[j]) {
@@ -74,13 +74,14 @@ void mergeSortedArrays(NumbersToMerge numbers) {
 // Driver code
 int main(int argc, char* argv[])
 {
+    // TODO: Change to take user input
     // Check if enough arguments are provided
     if (argc < 2) {
         cout << "Please provide a list of numbers.\n";
         return 0;
     }
     int length = argc - 1;
-    inputArray = new int[length]; // TODO: Account for odd numbers
+    inputArray = new int[length];
 
     // Parse the command-line arguments as numbers
     for (int i = 1; i < argc; ++i) {
