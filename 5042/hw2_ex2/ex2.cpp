@@ -9,6 +9,14 @@ using namespace std;
 int* inputArray;
 int* sortedArray;
 
+string printArray(int* array, int start, int end) {
+    stringstream ss;
+    for(int i = start; i < end; i++) {
+        ss << array[i] << " ";
+    }
+    return ss.str();
+}
+
 struct NumbersToSort {
     int* array;
     int startIndex;
@@ -29,6 +37,7 @@ void insertionSort(NumbersToSort numbers)
         }
         numbers.array[j + 1] = v;
     }
+    cout << "Sorted Array: " << printArray(inputArray, numbers.startIndex, numbers.endIndex) << endl;
 }
 
 struct NumbersToMerge {
@@ -62,23 +71,14 @@ void mergeSortedArrays(NumbersToMerge numbers) {
     }
 }
 
-string printArray(int* array, int size) {
-    stringstream ss;
-    for(int i = 0; i < size; i++) {
-        ss << array[i] << " ";
-    }
-    return ss.str();
-}
-
 // Driver code
 int main(int argc, char* argv[])
 {
     // Check if enough arguments are provided
     if (argc < 2) {
-        std::cout << "Please provide a list of numbers.\n";
+        cout << "Please provide a list of numbers.\n";
         return 0;
     }
-
     int length = argc - 1;
     inputArray = new int[length]; // TODO: Account for odd numbers
 
@@ -87,7 +87,7 @@ int main(int argc, char* argv[])
         inputArray[i - 1] = std::stoi(argv[i]);
     }
 
-    cout << "Input Array: " << printArray(inputArray, length) << endl;
+    cout << "Input Array: " << printArray(inputArray, 0, length) << endl;
     // Create a threads and pass the arguments
     thread sortingThread1(insertionSort, NumbersToSort{inputArray, 0, length/2});
     thread sortingThread2(insertionSort, NumbersToSort{inputArray, length/2, length});
@@ -95,13 +95,11 @@ int main(int argc, char* argv[])
     // Wait for the threads to finish
     sortingThread1.join();
     sortingThread2.join();
-    cout << "Input Array: " << printArray(inputArray, length) << endl;
+    cout << "Input Array: " << printArray(inputArray, 0, length) << endl;
 
     thread mergeThread(mergeSortedArrays, NumbersToMerge{length, inputArray});
     mergeThread.join();
-    cout << "Sorted Array: " << printArray(sortedArray, length) << endl;
-
-    printArray(sortedArray, length);
+    cout << "Merged Array: " << printArray(sortedArray, 0, length) << endl;
 
     delete[] inputArray;
     delete[] sortedArray;
