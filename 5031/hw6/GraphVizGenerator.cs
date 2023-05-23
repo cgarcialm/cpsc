@@ -91,7 +91,7 @@ class GraphVizGenerator
             string[] stringCols = stringRows[i].Replace("    ", "\t").Split('\t');
             if (stringCols.Length != nodes)
             {
-                throw new MatrixException("Matrix must be square.");
+                throw new MatrixException("Matrix must be square. Row " + i + " has " + stringCols.Length + " columns.");
             }
             for (int j = 0; j < nodes; j++)
             {
@@ -241,7 +241,7 @@ class Homework6
     /// </summary>
     static void runTests()
     {
-        const int NTESTS = 9;
+        const int NTESTS = 10;
         List<string> testInputs = new List<string>();
         for (int i = 1; i <= NTESTS; i++)
         {
