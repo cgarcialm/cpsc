@@ -24,10 +24,10 @@ class FloydsAlgorithm {
         for (int i = 0; i < nNodes; ++i) {
             for (int j = 0; j < nNodes; ++j) {
                 if (solMatrix[i, j] == INF) {
-                    Console.Write("INF ");
+                    Console.Write("INF\t");
                 }
                 else {
-                    Console.Write(solMatrix[i, j] + " ");
+                    Console.Write(solMatrix[i, j] + "\t");
                 }
             }
             Console.WriteLine();
@@ -38,6 +38,7 @@ class FloydsAlgorithm {
     public void calcShortestPaths() {
         for (k = 0; k < nNodes; k++) {
             // Print current matrix
+            Console.WriteLine(String.Format("Matrix {0}:", k));
             printMatrix();
 
             // Pick all vertices as source
