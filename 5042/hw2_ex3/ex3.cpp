@@ -13,9 +13,11 @@
 #include <thread>
 #include <mutex>
 #include <chrono>
+#include <condition_variable>
 using namespace std;
 
 mutex mtx;
+condition_variable cv;
 int allowedID = 1;
 
 /// Reads allowedID and check whether it is equal to the passed ID
@@ -26,22 +28,32 @@ void runner(int ID)
     string waitString = "Not thread " + to_string(ID) + "'s turn.\n";
     string turnString = "Thread " + to_string(ID) + "'s turn!\n";
     string completedString = "Thread " + to_string(ID) + " completed.\n";;
+
     int count = 0;
     while(count < 3) {
+        // Acquire a unique lock of mutex
+        unique_lock<mutex> uniqueLock(mtx);
+
         // Check if it's the thread's turn
-        if (allowedID != ID) {
+        while (allowedID != ID) {
             cout << waitString;
-        } else {
-            cout << turnString;
-            mtx.lock(); // Acquire the lock to update the shared variable
-            count++;
-            allowedID < 3 ? allowedID++ : allowedID = 1; // Update the shared variable, wrapping around from 3 to 1
-            mtx.unlock(); // Release the lock
-            if(count == 3) {
-                cout << completedString;
-            }
+            cv.wait(uniqueLock, [&] { return allowedID == ID; }); // Wait on allowedID
         }
-        this_thread::sleep_for(chrono::milliseconds (2)); // Delay to allow other threads to progress
+
+        // When it's the thread's turn execute
+        cout << turnString;
+        count++;
+        allowedID < 3 ? allowedID++ : allowedID = 1; // Update the shared variable, wrapping around from 3 to 1
+        uniqueLock.unlock(); // Release the lock
+        cv.notify_all(); // Notify all threads
+
+        // If already execute 3 times, finish
+        if(count == 3) {
+            cout << completedString;
+        }
+
+        // Delay next iteration to allow other threads make progress
+        this_thread::sleep_for(chrono::nanoseconds(1));
     }
 }
 
@@ -53,9 +65,7 @@ int main(int argc, char* argv[])
 {
     // Create three threads and pass the ID as argument
     thread thread1(runner, 1);
-    this_thread::sleep_for(chrono::milliseconds (1)); // Delay to allow previous thread to do something
     thread thread2(runner, 2);
-    this_thread::sleep_for(chrono::milliseconds (1)); // Delay to allow previous thread to do something
     thread thread3(runner, 3);
 
     // Wait for the threads to finish
