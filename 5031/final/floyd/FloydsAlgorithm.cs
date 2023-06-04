@@ -22,7 +22,18 @@ class FloydsAlgorithm {
     void printMatrix(int matrixIndex)
     {
         Console.WriteLine(String.Format("\nMatrix {0}:", matrixIndex));
+        Console.Write("\t");
         for (int i = 0; i < nNodes; ++i) {
+            Console.Write(String.Format("{0}\t", i));
+        }
+        Console.Write("\n\t");
+        for (int i = 0; i < nNodes; ++i) {
+            Console.Write("======\t");
+        }
+        Console.WriteLine();
+        
+        for (int i = 0; i < nNodes; ++i) {
+            Console.Write(String.Format("{0}: \t", i));
             for (int j = 0; j < nNodes; ++j) {
                 if (solMatrix[i, j] == INF) {
                     Console.Write("INF\t");
