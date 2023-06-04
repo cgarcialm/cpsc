@@ -21,7 +21,7 @@ class FloydsAlgorithm {
 
     void printMatrix(int matrixIndex)
     {
-        Console.WriteLine(String.Format("Matrix {0}:", matrixIndex));
+        Console.WriteLine(String.Format("\nMatrix {0}:", matrixIndex));
         for (int i = 0; i < nNodes; ++i) {
             for (int j = 0; j < nNodes; ++j) {
                 if (solMatrix[i, j] == INF) {
@@ -51,6 +51,8 @@ class FloydsAlgorithm {
                     // path from i to j, then update
                     // the value of dist[i][j]
                     if (solMatrix[i,k] != INF && solMatrix[k,j] != INF && solMatrix[i,k] + solMatrix[k,j] < solMatrix[i,j]) {
+                        Console.WriteLine(String.Format("* setting [{0}, {1}] to [{2}, {3}] + [{4}, {5}] for {6}", 
+                                            i, j, i, k, k, j, solMatrix[i,k] + solMatrix[k,j]));
                         solMatrix[i,j] = solMatrix[i,k] + solMatrix[k,j];
                     }
                 }
