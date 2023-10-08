@@ -23,18 +23,23 @@ def is_http_version_correct(version):
 def is_method_get(method):
   return method == 'GET'
 
-def cache_exists(url):
+def get_cache_path(url):
   parsed_url = urlparse(url)
-  path = Path('./cache/' + parsed_url.hostname + parsed_url.path)
+  return Path('./cache/' + parsed_url.hostname + parsed_url.path)
 
-  return path.exists()
+def cache_exists(url):
+  return get_cache_path(url).exists()
 
 def read_cache(url):
-  parsed_url = urlparse(url)
-  path = Path('./cache/' + parsed_url.hostname + parsed_url.path)
+  path = get_cache_path(url)
   file = path.open()
 
   return file.read()
+
+def write_cache(url, msg):
+  path = get_cache_path(url)
+  path.parent.mkdir(parents=True, exist_ok=True)
+  path.write_text(msg)
 
 def create_msg_to_server(url):
   path = urlparse(url).path
@@ -74,17 +79,17 @@ if __name__ == "__main__":
     print('client msg: {}'.format(client_msg))
 
     if not is_msg_length_valid(client_msg):
-      server_msg = 'Message length incorrect. Should be 3.'.encode()
+      server_msg = 'Message length incorrect. Should be 3.'
     else:
       method, url, version = parse_http_msg(client_msg)
       if not is_method_get(method):
-        server_msg = 'Method incorrect. Should be GET.'.encode()
+        server_msg = 'Method incorrect. Should be GET.'
       elif not is_http_version_correct(version):
-        server_msg = 'HTTP version incorrect. Should be HTTP/1.1.'.encode()
+        server_msg = 'HTTP version incorrect. Should be HTTP/1.1.'
       else:
 
         if cache_exists(url):
-          server_msg = read_cache(url).encode()
+          server_msg = read_cache(url)
         else:
           client_socket = socket(AF_INET, SOCK_STREAM)
           print('client_socket ' , client_socket)
@@ -92,12 +97,12 @@ if __name__ == "__main__":
           client_socket.connect((urlparse(url).hostname, server_port))
           client_socket.send(msg_to_server.encode())
           # client_socket.send("GET /networks/valid.html HTTP/1.1\r\nHost: zhiju.me\r\nConnection: close\r\n\r\n".encode())
-          server_msg = client_socket.recv(buf_size)
-          print(server_msg.decode())
+          server_msg = client_socket.recv(buf_size).decode()
+          write_cache(url, server_msg)
           client_socket.close()
-    
+
     # Send back msg
-    conn_socket.send(server_msg)
+    conn_socket.send(server_msg.encode())
 
     # Close connection socket
     conn_socket.close()
