@@ -1,6 +1,7 @@
 from socket import *
 from urllib.parse import urlparse
 import sys
+from pathlib import Path
 
 
 def is_msg_length_valid(msg):
@@ -22,17 +23,23 @@ def is_http_version_correct(version):
 def is_method_get(method):
   return method == 'GET'
 
-def get_cache_path(url):
+def cache_exists(url):
   parsed_url = urlparse(url)
-  path = './cache/' + parsed_url.hostname + parsed_url.path
-  file = open(path, "r")
+  path = Path('./cache/' + parsed_url.hostname + parsed_url.path)
+
+  return path.exists()
+
+def read_cache(url):
+  parsed_url = urlparse(url)
+  path = Path('./cache/' + parsed_url.hostname + parsed_url.path)
+  file = path.open()
 
   return file.read()
 
 def create_msg_to_server(url):
-  path = get_cache_path(url)
-
-  return "GET {} HTTP/1.1\r\nHost: {}\r\nConnection: close\r\n\r\n".format(path, urlparse(url).hostname)
+  path = urlparse(url).path
+  host = urlparse(url).hostname
+  return "GET {} HTTP/1.1\r\nHost: {}\r\nConnection: close\r\n\r\n".format(path, host)
 
 
 if __name__ == "__main__":
@@ -57,7 +64,7 @@ if __name__ == "__main__":
 
     server_port = 80
     buf_size = 1024
-    
+
     # Accept incoming request and create new socket for client
     conn_socket, addr = server_socket.accept()
     print('con_socket: {} | addr: {}'.format(str(conn_socket), str(addr)))
@@ -75,15 +82,19 @@ if __name__ == "__main__":
       elif not is_http_version_correct(version):
         server_msg = 'HTTP version incorrect. Should be HTTP/1.1.'.encode()
       else:
-        msg_to_server = create_msg_to_server(url)
 
-        client_socket = socket(AF_INET, SOCK_STREAM)
-        client_socket.connect((urlparse(url).hostname, server_port))
-        client_socket.send(msg_to_server.encode())
-        # client_socket.send("GET /networks/valid.html HTTP/1.1\r\nHost: zhiju.me\r\nConnection: close\r\n\r\n".encode())
-        server_msg = client_socket.recv(buf_size)
-        print(server_msg.decode())
-        print('client_socket ' , client_socket)
+        if cache_exists(url):
+          server_msg = read_cache(url).encode()
+        else:
+          client_socket = socket(AF_INET, SOCK_STREAM)
+          print('client_socket ' , client_socket)
+          msg_to_server = create_msg_to_server(url)
+          client_socket.connect((urlparse(url).hostname, server_port))
+          client_socket.send(msg_to_server.encode())
+          # client_socket.send("GET /networks/valid.html HTTP/1.1\r\nHost: zhiju.me\r\nConnection: close\r\n\r\n".encode())
+          server_msg = client_socket.recv(buf_size)
+          print(server_msg.decode())
+          client_socket.close()
     
     # Send back msg
     conn_socket.send(server_msg)
