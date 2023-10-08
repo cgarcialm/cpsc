@@ -92,6 +92,7 @@ if __name__ == "__main__":
         if cache_exists(url):
           print("Yeah! The requested file is in the cache and is about to be sent to client!")
           server_msg = read_cache(url)
+          # TODO: Add cache hit to message
         else:
           print("Oops! No cache hit! Requesting origin server for the file...")
           client_socket = socket(AF_INET, SOCK_STREAM)
@@ -99,8 +100,8 @@ if __name__ == "__main__":
           client_socket.connect((urlparse(url).hostname, server_port))
           print("Sending the following msg from proxy to server:\n", msg_to_server)
           client_socket.send(msg_to_server.encode())
-          # client_socket.send("GET /networks/valid.html HTTP/1.1\r\nHost: zhiju.me\r\nConnection: close\r\n\r\n".encode())
           server_msg = client_socket.recv(buf_size).decode()
+          # TODO: Handle possible errors
           write_cache(url, server_msg)
           client_socket.close()
 
