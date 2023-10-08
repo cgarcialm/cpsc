@@ -37,9 +37,6 @@ def create_msg_to_server(url):
 
 if __name__ == "__main__":
 
-  server_name = 'zhiju.me'
-  server_port = 80
-
   if len(sys.argv) <= 1:
     print('Usage : "python proxy.py port_number"\n[port_number] : It is the Port Number Of Proxy Server')
     sys.exit(2)
@@ -57,6 +54,10 @@ if __name__ == "__main__":
 
   print('The proxy server is ready to receive...')
   while True:
+
+    server_port = 80
+    buf_size = 1024
+    
     # Accept incoming request and create new socket for client
     conn_socket, addr = server_socket.accept()
     print('con_socket: {} | addr: {}'.format(str(conn_socket), str(addr)))
@@ -77,10 +78,10 @@ if __name__ == "__main__":
         msg_to_server = create_msg_to_server(url)
 
         client_socket = socket(AF_INET, SOCK_STREAM)
-        client_socket.connect((server_name, server_port))
+        client_socket.connect((urlparse(url).hostname, server_port))
         client_socket.send(msg_to_server.encode())
         # client_socket.send("GET /networks/valid.html HTTP/1.1\r\nHost: zhiju.me\r\nConnection: close\r\n\r\n".encode())
-        server_msg = client_socket.recv(1024)
+        server_msg = client_socket.recv(buf_size)
         print(server_msg.decode())
         print('client_socket ' , client_socket)
     
