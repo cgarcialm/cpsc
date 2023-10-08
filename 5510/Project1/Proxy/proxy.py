@@ -102,6 +102,7 @@ class ProxyServer:
                         print("Sending the following message from proxy to server:\n", msg_to_server)
                         client_socket.send(msg_to_server.encode())
 
+                        # TODO: Add response validation for other cases
                         server_msg = client_socket.recv(self.buf_size).decode()
                         server_msg = self.process_server_message(url, server_msg)
                         
