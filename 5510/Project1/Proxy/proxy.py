@@ -1,4 +1,5 @@
 from socket import *
+from urllib.parse import urlparse
 import sys
 
 
@@ -20,6 +21,13 @@ def is_http_version_correct(version):
 
 def is_method_get(method):
   return method == 'GET'
+
+def get_cache_path(url):
+  parsed_url = urlparse(url)
+  path = './cache/' + parsed_url.hostname + parsed_url.path
+  file = open(path, "r")
+
+  return file.read()
 
 
 if __name__ == "__main__":
@@ -55,6 +63,7 @@ if __name__ == "__main__":
       elif not is_http_version_correct(version):
         server_msg = 'HTTP version incorrect. Should be HTTP/1.1.'.encode()
       else:
+        url_parsed = get_cache_path(url)
         server_msg = 'Message read in 127.0.0.1 {}'.format(sys.argv[1]).encode()
     
     # Send back msg
