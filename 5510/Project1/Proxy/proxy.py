@@ -46,6 +46,21 @@ def create_msg_to_server(url):
   host = urlparse(url).hostname
   return "GET {} HTTP/1.1\r\nHost: {}\r\nConnection: close\r\n\r\n".format(path, host)
 
+def get_response_status(msg):
+  try:
+    version, status, reason = msg.split(None, 2)
+    return status
+  except ValueError:
+    return -1
+  
+def process_server_message(url, msg):
+  version = get_response_status(msg)
+  if version == "200":
+    write_cache(url, msg)
+  if version not in ["200", "404"]:
+    return "Internal Error"
+  
+  return msg
 
 if __name__ == "__main__":
 
@@ -100,9 +115,11 @@ if __name__ == "__main__":
           client_socket.connect((urlparse(url).hostname, server_port))
           print("Sending the following msg from proxy to server:\n", msg_to_server)
           client_socket.send(msg_to_server.encode())
+
+          # Process response
           server_msg = client_socket.recv(buf_size).decode()
-          # TODO: Handle possible errors
-          write_cache(url, server_msg)
+          server_msg = process_server_message(url, server_msg)
+          
           client_socket.close()
 
     # Send back msg
