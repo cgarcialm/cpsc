@@ -32,12 +32,13 @@ def get_cache_path(url):
 def create_msg_to_server(url):
   path = get_cache_path(url)
 
-  return "GET {} HTTP/1.1 \nHost: zhiju.me \nConnection: close".format(path)
+  return "GET {} HTTP/1.1\r\nHost: zhiju.me\r\nConnection: close\r\n\r\n".format(path)
 
 
 if __name__ == "__main__":
-  print('Number of arguments:', len(sys.argv), 'arguments.')
-  print('Argument List:', str(sys.argv))
+
+  server_name = 'zhiju.me'
+  server_port = 80
 
   if len(sys.argv) <= 1:
     print('Usage : "python proxy.py server_ip"\n[server_ip : It is the IP Address Of Proxy Server')
@@ -68,8 +69,15 @@ if __name__ == "__main__":
       elif not is_http_version_correct(version):
         server_msg = 'HTTP version incorrect. Should be HTTP/1.1.'.encode()
       else:
-        url_parsed = create_msg_to_server(url)
-        server_msg = 'Message read in 127.0.0.1 {}'.format(sys.argv[1]).encode()
+        msg_to_server = create_msg_to_server(url)
+
+        client_socket = socket(AF_INET, SOCK_STREAM)
+        client_socket.connect((server_name, server_port))
+        # client_socket.send(msg_to_server.encode())
+        client_socket.send(b"GET /networks/valid.html HTTP/1.1\r\nHost: zhiju.me\r\nConnection: close\r\n\r\n")
+        server_msg = client_socket.recv(1024)
+        print(server_msg.decode())
+        print('client_socket ' , client_socket)
     
     # Send back msg
     conn_socket.send(server_msg)
