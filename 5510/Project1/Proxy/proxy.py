@@ -29,6 +29,11 @@ def get_cache_path(url):
 
   return file.read()
 
+def create_msg_to_server(url):
+  path = get_cache_path(url)
+
+  return "GET {} HTTP/1.1 \nHost: zhiju.me \nConnection: close".format(path)
+
 
 if __name__ == "__main__":
   print('Number of arguments:', len(sys.argv), 'arguments.')
@@ -63,7 +68,7 @@ if __name__ == "__main__":
       elif not is_http_version_correct(version):
         server_msg = 'HTTP version incorrect. Should be HTTP/1.1.'.encode()
       else:
-        url_parsed = get_cache_path(url)
+        url_parsed = create_msg_to_server(url)
         server_msg = 'Message read in 127.0.0.1 {}'.format(sys.argv[1]).encode()
     
     # Send back msg
