@@ -32,7 +32,7 @@ def get_cache_path(url):
 def create_msg_to_server(url):
   path = get_cache_path(url)
 
-  return "GET {} HTTP/1.1\r\nHost: zhiju.me\r\nConnection: close\r\n\r\n".format(path)
+  return "GET {} HTTP/1.1\r\nHost: {}\r\nConnection: close\r\n\r\n".format(path, urlparse(url).hostname)
 
 
 if __name__ == "__main__":
@@ -41,11 +41,16 @@ if __name__ == "__main__":
   server_port = 80
 
   if len(sys.argv) <= 1:
-    print('Usage : "python proxy.py server_ip"\n[server_ip : It is the IP Address Of Proxy Server')
+    print('Usage : "python proxy.py port_number"\n[port_number] : It is the Port Number Of Proxy Server')
     sys.exit(2)
 
-  # Create a server socket, bind it to a port and start listening
-  server_socket = socket(AF_INET, SOCK_STREAM)
+  # Create a server socket
+  try:
+    server_socket = socket(AF_INET, SOCK_STREAM)
+  except socket.error as err:
+    raise Exception("Socket creation failed with error %s".format(err))
+  
+  # Bind it to the given port and start listening
   server_socket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
   server_socket.bind(('', int(sys.argv[1])))
   server_socket.listen()
@@ -73,8 +78,8 @@ if __name__ == "__main__":
 
         client_socket = socket(AF_INET, SOCK_STREAM)
         client_socket.connect((server_name, server_port))
-        # client_socket.send(msg_to_server.encode())
-        client_socket.send(b"GET /networks/valid.html HTTP/1.1\r\nHost: zhiju.me\r\nConnection: close\r\n\r\n")
+        client_socket.send(msg_to_server.encode())
+        # client_socket.send("GET /networks/valid.html HTTP/1.1\r\nHost: zhiju.me\r\nConnection: close\r\n\r\n".encode())
         server_msg = client_socket.recv(1024)
         print(server_msg.decode())
         print('client_socket ' , client_socket)
