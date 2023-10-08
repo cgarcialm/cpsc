@@ -64,37 +64,40 @@ if __name__ == "__main__":
   server_socket.bind(('', int(sys.argv[1])))
   server_socket.listen()
 
-  print('The proxy server is ready to receive...')
   while True:
+    print('\n\n\n****************************** Ready to serve... ******************************')
 
     server_port = 80
     buf_size = 1024
 
     # Accept incoming request and create new socket for client
     conn_socket, addr = server_socket.accept()
-    print('con_socket: {} | addr: {}'.format(str(conn_socket), str(addr)))
+    client_ip, client_port = conn_socket.getpeername()
+    print("Received a client connection from: (\'{}\', {})".format(client_ip, client_port))
 
     # Read message from the socket
     client_msg = conn_socket.recv(1024).decode()
-    print('client msg: {}'.format(client_msg))
+    print("Received a message from this client: b\'{}\'".format(client_msg))
 
     if not is_msg_length_valid(client_msg):
-      server_msg = 'Message length incorrect. Should be 3.'
+      server_msg = "Message length incorrect. Should be 3."
     else:
       method, url, version = parse_http_msg(client_msg)
       if not is_method_get(method):
-        server_msg = 'Method incorrect. Should be GET.'
+        server_msg = "Method incorrect. Should be GET."
       elif not is_http_version_correct(version):
-        server_msg = 'HTTP version incorrect. Should be HTTP/1.1.'
+        server_msg = "HTTP version incorrect. Should be HTTP/1.1."
       else:
 
         if cache_exists(url):
+          print("Yeah! The requested file is in the cache and is about to be sent to client!")
           server_msg = read_cache(url)
         else:
+          print("Oops! No cache hit! Requesting origin server for the file...")
           client_socket = socket(AF_INET, SOCK_STREAM)
-          print('client_socket ' , client_socket)
           msg_to_server = create_msg_to_server(url)
           client_socket.connect((urlparse(url).hostname, server_port))
+          print("Sending the following msg from proxy to server:\n", msg_to_server)
           client_socket.send(msg_to_server.encode())
           # client_socket.send("GET /networks/valid.html HTTP/1.1\r\nHost: zhiju.me\r\nConnection: close\r\n\r\n".encode())
           server_msg = client_socket.recv(buf_size).decode()
@@ -106,3 +109,4 @@ if __name__ == "__main__":
 
     # Close connection socket
     conn_socket.close()
+    print("All done! Closing socket...")
