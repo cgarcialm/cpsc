@@ -90,10 +90,16 @@ class FloydsAlgorithm {
         //                   { INF, INF, 0, 1 },
         //                   { INF, INF, INF, 0 } };
 
-        int[, ] graph = { { 0, INF, 3, INF },
-                          { 2, 0, INF, INF },
-                          { INF, 7, 0, 1 },
-                          { 6, INF, INF, 0 } };
+        // int[, ] graph = { { 0, INF, 3, INF },
+        //                   { 2, 0, INF, INF },
+        //                   { INF, 7, 0, 1 },
+        //                   { 6, INF, INF, 0 } };
+
+        int[, ] graph = { { 0, 2, INF, 1, 8 },
+                          { 6, 0, 3, 2, INF },
+                          { INF, INF, 0, 4, INF },
+                          { INF, INF, 2, 0, 3 },
+                          { 3, INF, INF, INF, 0 } };
  
         FloydsAlgorithm f = new FloydsAlgorithm(graph);
  
