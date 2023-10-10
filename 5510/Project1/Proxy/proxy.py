@@ -1,3 +1,8 @@
+"""
+Author: Cecilia Garcia Lopez de Munain
+Version: 1.0
+"""
+
 from socket import *
 from urllib.parse import urlparse
 import sys
