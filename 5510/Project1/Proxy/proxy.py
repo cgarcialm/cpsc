@@ -18,6 +18,32 @@ class ProxyServer:
             return server_socket
         except socket.error as err:
             raise Exception("Socket creation failed with error %s".format(err))
+        
+    def receive_http_response(self, socket):
+        MAX_RESPONSE_SIZE = 16 * 1024 * 1024  # 16MB
+        received_data = b""  # Initialize an empty bytes object to store the received data
+        headers_received = False  # Flag to indicate if headers have been received
+        
+        while True:
+            chunk = socket.recv(1024)  # Receive data in 1024-byte chunks
+            if not chunk:
+                break  # If no more data is received, exit the loop
+            
+            received_data += chunk  # Concatenate the received data
+            
+            # Check if we have received the entire HTTP response
+            if len(received_data) >= MAX_RESPONSE_SIZE:
+                raise Exception("HTTP response exceeds the maximum allowed size")
+            
+            # Check if we've reached the end of the headers
+            if b"\r\n\r\n" in received_data:
+                headers_received = True
+            
+            # If headers have been received, continue accumulating data
+            if headers_received:
+                continue
+        
+        return received_data
 
     def is_msg_length_valid(self, msg):
         return len(msg.split()) == 3
@@ -84,8 +110,8 @@ class ProxyServer:
             conn_socket, addr = self.server_socket.accept()
             client_ip, client_port = conn_socket.getpeername()
             print("Received a client connection from: (\'{}\', {})".format(client_ip, client_port))
-            client_msg = conn_socket.recv(self.buf_size).decode()
-            print("Received a message from this client: b\'{}\'".format(client_msg))
+            client_msg = conn_socket.recv(self.buf_size).decode()        
+            print("Received a message from this client: b{}".format(repr(client_msg)))
 
             if not self.is_msg_length_valid(client_msg):
                 server_msg = "Message length incorrect. Should be 3."
@@ -108,7 +134,7 @@ class ProxyServer:
                         client_socket.send(msg_to_server.encode())
 
                         # TODO: Add response validation for other cases
-                        server_msg = client_socket.recv(self.buf_size).decode()
+                        server_msg = self.receive_http_response(client_socket).decode()
                         server_msg = self.process_server_message(url, server_msg)
                         
                         client_socket.close()
@@ -120,7 +146,7 @@ class ProxyServer:
 
 if __name__ == "__main__":
     if len(sys.argv) <= 1:
-        print('Usage: "python proxy.py port_number"\r\n[port_number] : It is the Port Number Of Proxy Server')
+        print('Usage : "python proxy.py port_number"\r\n[port_number] : It is the Port Number Of Proxy Server')
         sys.exit(2)
 
     port_number = int(sys.argv[1])
