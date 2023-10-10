@@ -246,6 +246,7 @@ class ProxyServer:
         Returns:
             str: The HTTP response message to send back to the client.
         """
+        client_msg = client_msg.decode()
         if not self.is_valid_http_message_length(client_msg):
             # Handle an invalid client message length
             server_msg = "Message length incorrect. Should be 3."
@@ -289,8 +290,8 @@ class ProxyServer:
             conn_socket, addr = self.server_socket.accept()
             client_ip, client_port = conn_socket.getpeername()
             print("Received a client connection from: (\'{}\', {})".format(client_ip, client_port))
-            client_msg = conn_socket.recv(self.buf_size).decode()        
-            print("Received a message from this client: b{}".format(repr(client_msg)))
+            client_msg = conn_socket.recv(self.buf_size)        
+            print("Received a message from this client: {}".format(client_msg))
             
             # Get and process the server response based on the client request
             server_msg = self.get_and_process_server_msg(client_msg)
