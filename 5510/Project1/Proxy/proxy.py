@@ -9,6 +9,9 @@ import sys
 from pathlib import Path
 
 class ProxyServer:
+    SERVER_PORT = 80
+    BUF_SIZE = 1024
+
     def __init__(self, port):
         """
         Initialize the ProxyServer with the given port number.
@@ -17,8 +20,6 @@ class ProxyServer:
             port (int): Port number for the proxy server.
         """
         self.server_socket = self.create_server_socket(port)
-        self.server_port = 80
-        self.buf_size = 1024
 
     def create_server_socket(self, port):
         """
@@ -273,7 +274,7 @@ class ProxyServer:
                     print("Oops! No cache hit! Requesting origin server for the file...")
                     client_socket = socket(AF_INET, SOCK_STREAM)
                     msg_to_server = self.create_http_request_to_server(url)
-                    client_socket.connect((urlparse(url).hostname, self.server_port))
+                    client_socket.connect((urlparse(url).hostname, self.SERVER_PORT))
                     print("Sending the following message from proxy to server:\r\n", msg_to_server)
                     client_socket.send(msg_to_server.encode())
 
@@ -295,7 +296,7 @@ class ProxyServer:
             conn_socket, addr = self.server_socket.accept()
             client_ip, client_port = conn_socket.getpeername()
             print("Received a client connection from: (\'{}\', {})".format(client_ip, client_port))
-            client_msg = conn_socket.recv(self.buf_size)        
+            client_msg = conn_socket.recv(self.BUF_SIZE)        
             print("Received a message from this client: {}".format(client_msg))
             
             # Get and process the server response based on the client request
