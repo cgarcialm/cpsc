@@ -67,7 +67,7 @@ class ProxyServer:
     def process_server_message(self, url, msg):
         version = self.get_response_status(msg)
         if len(msg) > 0 and version in ["200", "404"]:
-            msg = msg[msg.find("Connection: close")+17:]
+            msg = msg[msg.find("\r\n\r\n"):]
             if version == "200":
                 print("Response received from the server, and status code is 200! Writing to cache for future use...")
                 self.write_cache(url, "HTTP/1.1 200 OK\nCache Hit:1\n" + msg)
