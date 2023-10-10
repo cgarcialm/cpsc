@@ -70,17 +70,17 @@ class ProxyServer:
             msg = msg[msg.find("\r\n\r\n"):]
             if version == "200":
                 print("Response received from the server, and status code is 200! Writing to cache for future use...")
-                self.write_cache(url, "HTTP/1.1 200 OK\nCache Hit:1\n" + msg)
-                msg = "HTTP/1.1 200 OK\nCache Hit:0\n" + msg
+                self.write_cache(url, "HTTP/1.1 200 OK\r\nCache Hit:1\r\n" + msg)
+                msg = "HTTP/1.1 200 OK\r\nCache Hit:0\n" + msg
             else:
-                msg = "HTTP/1.1 404 Not Found\nCache Hit:0\n" + msg
+                msg = "HTTP/1.1 404 Not Found\r\nCache Hit:0\r\n" + msg
             return msg
         
-        return "HTTP/1.1 500 Internal Server Error\nCache Hit:0\n"
+        return "HTTP/1.1 500 Internal Server Error\r\nCache Hit:0\r\n\r\n"
 
     def run(self):
         while True:
-            print('\n\n\n****************************** Ready to serve... ******************************')
+            print('\r\n\r\n\r\n****************************** Ready to serve... ******************************')
             conn_socket, addr = self.server_socket.accept()
             client_ip, client_port = conn_socket.getpeername()
             print("Received a client connection from: (\'{}\', {})".format(client_ip, client_port))
@@ -104,7 +104,7 @@ class ProxyServer:
                         client_socket = socket(AF_INET, SOCK_STREAM)
                         msg_to_server = self.create_msg_to_server(url)
                         client_socket.connect((urlparse(url).hostname, self.server_port))
-                        print("Sending the following message from proxy to server:\n", msg_to_server)
+                        print("Sending the following message from proxy to server:\r\n", msg_to_server)
                         client_socket.send(msg_to_server.encode())
 
                         # TODO: Add response validation for other cases
@@ -120,7 +120,7 @@ class ProxyServer:
 
 if __name__ == "__main__":
     if len(sys.argv) <= 1:
-        print('Usage : "python proxy.py port_number"\n[port_number] : It is the Port Number Of Proxy Server')
+        print('Usage: "python proxy.py port_number"\r\n[port_number] : It is the Port Number Of Proxy Server')
         sys.exit(2)
 
     port_number = int(sys.argv[1])
