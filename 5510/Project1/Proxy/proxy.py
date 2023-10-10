@@ -5,11 +5,26 @@ from pathlib import Path
 
 class ProxyServer:
     def __init__(self, port):
+        """
+        Initialize the ProxyServer with the given port number.
+
+        Args:
+            port (int): Port number for the proxy server.
+        """
         self.server_socket = self.create_server_socket(port)
         self.server_port = 80
         self.buf_size = 1024
 
     def create_server_socket(self, port):
+        """
+        Create and configure the server socket.
+
+        Args:
+            port (int): Port number for the server socket.
+
+        Returns:
+            socket.socket: The created server socket.
+        """
         try:
             server_socket = socket(AF_INET, SOCK_STREAM)
             server_socket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
@@ -18,8 +33,20 @@ class ProxyServer:
             return server_socket
         except socket.error as err:
             raise Exception("Socket creation failed with error %s".format(err))
-        
+
     def receive_http_response(self, socket):
+        """
+        Receive an HTTP response from a socket, accumulating both headers and body.
+
+        Args:
+            socket (socket.socket): The socket connected to the server.
+
+        Returns:
+            bytes: The accumulated HTTP response data.
+
+        Raises:
+            Exception: If the HTTP response exceeds the maximum allowed size.
+        """
         MAX_RESPONSE_SIZE = 16 * 1024 * 1024  # 16MB
         received_data = b""  # Initialize an empty bytes object to store the received data
         headers_received = False  # Flag to indicate if headers have been received
@@ -46,9 +73,27 @@ class ProxyServer:
         return received_data
 
     def is_msg_length_valid(self, msg):
+        """
+        Check if the length of the received message is valid (should be 3).
+
+        Args:
+            msg (str): The received message.
+
+        Returns:
+            bool: True if the message length is valid, False otherwise.
+        """
         return len(msg.split()) == 3
 
     def parse_http_msg(self, msg):
+        """
+        Parse an HTTP message into its components.
+
+        Args:
+            msg (str): The HTTP message.
+
+        Returns:
+            tuple: A tuple containing the method, URL, and version.
+        """
         msg_components = msg.split()
         method = msg_components[0]
         url = msg_components[1]
@@ -56,34 +101,104 @@ class ProxyServer:
         return method, url, version
 
     def is_http_version_correct(self, version):
+        """
+        Check if the HTTP version is correct (should be 'HTTP/1.1').
+
+        Args:
+            version (str): The HTTP version.
+
+        Returns:
+            bool: True if the version is correct, False otherwise.
+        """
         return version == 'HTTP/1.1'
 
     def is_method_get(self, method):
+        """
+        Check if the HTTP method is GET.
+
+        Args:
+            method (str): The HTTP method.
+
+        Returns:
+            bool: True if the method is GET, False otherwise.
+        """
         return method == 'GET'
 
     def get_cache_path(self, url):
+        """
+        Get the cache file path for a given URL.
+
+        Args:
+            url (str): The URL.
+
+        Returns:
+            pathlib.Path: The cache file path.
+        """
         parsed_url = urlparse(url)
         return Path('./cache/' + parsed_url.hostname + parsed_url.path)
 
     def cache_exists(self, url):
+        """
+        Check if a cache file exists for a given URL.
+
+        Args:
+            url (str): The URL.
+
+        Returns:
+            bool: True if a cache file exists, False otherwise.
+        """
         return self.get_cache_path(url).exists()
 
     def read_cache(self, url):
+        """
+        Read the contents of a cache file for a given URL.
+
+        Args:
+            url (str): The URL.
+
+        Returns:
+            str: The contents of the cache file.
+        """
         path = self.get_cache_path(url)
         file = path.open()
         return file.read()
 
     def write_cache(self, url, msg):
+        """
+        Write an HTTP response to a cache file for a given URL.
+
+        Args:
+            url (str): The URL.
+            msg (str): The HTTP response message.
+        """
         path = self.get_cache_path(url)
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(msg)
 
     def create_msg_to_server(self, url):
+        """
+        Create an HTTP request message to be sent to the origin server.
+
+        Args:
+            url (str): The URL.
+
+        Returns:
+            str: The HTTP request message.
+        """
         path = urlparse(url).path
         host = urlparse(url).hostname
         return "GET {} HTTP/1.1\r\nHost: {}\r\nConnection: close\r\n\r\n".format(path, host)
 
     def get_response_status(self, msg):
+        """
+        Get the HTTP response status code.
+
+        Args:
+            msg (str): The HTTP response message.
+
+        Returns:
+            str: The HTTP response status code.
+        """
         try:
             version, status, reason = msg.split(None, 2)
             return status
@@ -91,6 +206,16 @@ class ProxyServer:
             return -1
 
     def process_server_message(self, url, msg):
+        """
+        Process the HTTP response message from the origin server.
+
+        Args:
+            url (str): The URL.
+            msg (str): The HTTP response message.
+
+        Returns:
+            str: The processed HTTP response message.
+        """
         version = self.get_response_status(msg)
         if len(msg) > 0 and version in ["200", "404"]:
             msg = msg[msg.find("\r\n\r\n"):] + "\r\n\r\n"
@@ -105,6 +230,9 @@ class ProxyServer:
         return "HTTP/1.1 500 Internal Server Error\r\nCache Hit:0\r\n\r\n"
 
     def run(self):
+        """
+        Run the proxy server to handle client requests.
+        """
         while True:
             print('\r\n\r\n\r\n****************************** Ready to serve... ******************************')
             conn_socket, addr = self.server_socket.accept()
