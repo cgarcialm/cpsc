@@ -274,7 +274,7 @@ class ProxyServer:
 
 if __name__ == "__main__":
     if len(sys.argv) <= 1:
-        print('Usage : "python proxy.py port_number"\r\n[port_number] : It is the Port Number Of Proxy Server')
+        print('Usage: "python proxy.py port_number"\r\n[port_number] : It is the Port Number Of Proxy Server')
         sys.exit(2)
 
     port_number = int(sys.argv[1])
