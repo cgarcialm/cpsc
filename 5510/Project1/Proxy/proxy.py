@@ -27,6 +27,23 @@ from urllib.parse import urlparse
 import sys
 from pathlib import Path
 
+class URL:
+    """
+    A class to parse an URL into its components.
+    """
+    DEFAULT_HTTP_PORT = 80
+
+    def __init__(self, url):
+        """
+        Initialize a URL instance.
+
+        :param str url: The URL.
+        """
+        self.parsed_url = urlparse(url)
+        self.host = self.parsed_url.hostname
+        self.port = self.parsed_url.port or self.DEFAULT_HTTP_PORT  # Default port for HTTP
+        self.path = self.parsed_url.path
+
 class ProxyClient:
     """
     ProxyClient is responsible for handling communication with the origin 
@@ -43,24 +60,8 @@ class ProxyClient:
         :param str headers: (Optional) Additional HTTP headers to include in 
         the request.
         """
-        self.host = urlparse(url).hostname
-        self.port = self.get_port_from_url(url)
-        self.path = urlparse(url).path
+        self.url = url
         self.headers = headers
-
-    def get_port_from_url(self, url):
-        """
-        Get the port from the URL.
-
-        :param str url: The URL of the origin server.
-        :return: Port number specified in the URL or the default HTTP port, 80.
-        :rtype: int
-        """
-        DEFAULT_HTTP_PORT = 80
-        port = urlparse(url).port
-        if port:
-            return port
-        return DEFAULT_HTTP_PORT
 
     def create_http_request_to_server(self):
         """
@@ -73,7 +74,7 @@ class ProxyClient:
             "GET {} HTTP/1.1\r\n"
             "Host: {}\r\n"
             "Connection: close\r\n"
-            .format(self.path, self.host)
+            .format(self.url.path, self.url.host)
         )
         if self.headers:
             request_msg += self.headers
@@ -119,7 +120,7 @@ class ProxyClient:
         :rtype: str
         """
         client_socket = socket(AF_INET, SOCK_STREAM)
-        client_socket.connect((self.host, self.port))
+        client_socket.connect((self.url.host, self.url.port))
         msg_to_server = self.create_http_request_to_server()
         print(
             "Sending the following message from proxy to"
@@ -193,7 +194,7 @@ class ProxyServer:
 
         msg_components = msg.split()
         method = msg_components[0]
-        url = msg_components[1]
+        url = URL(msg_components[1])
         version = msg_components[2]
         try:
             headers = " ".join(msg_components[3:])
@@ -231,8 +232,7 @@ class ProxyServer:
         :rtype: bool
         """
         try:
-            result = urlparse(url)
-            return all([result.scheme, result.netloc])
+            return all([url.parsed_url.scheme, url.parsed_url.netloc])
         except:
             return False
 
@@ -244,8 +244,7 @@ class ProxyServer:
         :return: The cache file path.
         :rtype: pathlib.Path
         """
-        parsed_url = urlparse(url)
-        return Path("./cache/" + parsed_url.hostname + parsed_url.path)
+        return Path("./cache/{}/{}{}".format(url.host, url.port, url.path))
 
     def cache_exists(self, url):
         """
