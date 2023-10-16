@@ -14,9 +14,6 @@ class ProxyServer:
     ProxyServer is a simple HTTP proxy server that handles client requests and 
     caches responses.
     """
-
-    SERVER_PORT = 80  # The port used for connecting to the origin server 
-                      # (usually port 80 for HTTP)
     BUF_SIZE = 1024  # The buffer size for receiving data from clients and from 
                      # server
 
@@ -212,6 +209,23 @@ class ProxyServer:
         path.parent.mkdir(parents = True, exist_ok = True)
         path.write_text(msg)
 
+    def get_port_from_url(self, url):
+        """
+        Get port from a given URL.
+
+        Args:
+            url (str): The URL.
+        
+        Returns:
+            str: Port number specified in URL or the default HTTP port, 80.
+        """
+        DEFAULT_HTTP_PORT = 80  # The port used for connecting to the origin 
+                                  # server (usually port 80 for HTTP)
+        port = urlparse(url).port
+        if port:
+            return port
+        return DEFAULT_HTTP_PORT
+
     def create_http_request_to_server(self, url):
         """
         Create an HTTP request message to be sent to the origin server.
@@ -323,10 +337,11 @@ class ProxyServer:
                         "Oops! No cache hit! Requesting origin server for" 
                         " the file..."
                     )
+                    port = self.get_port_from_url(url)
                     client_socket = socket(AF_INET, SOCK_STREAM)
                     msg_to_server = self.create_http_request_to_server(url)
                     client_socket.connect(
-                        (urlparse(url).hostname, self.SERVER_PORT)
+                        (urlparse(url).hostname, port)
                         )
                     print(
                         "Sending the following message from proxy to"
