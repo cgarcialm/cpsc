@@ -9,7 +9,7 @@ ProxyClient handles communication with the origin server, generating requests,
 getting and accumulating responses.
 
 ProxyServer manages client connections, serving cached responses or forwarding 
-requests to the origin server through a ProxyClient and caching valid responses. 
+requests to the origin server through a ProxyClient and caching valid responses.
 
 Usage:
 The main entry of the program it accepts a port number via the command line for 
@@ -33,21 +33,24 @@ class ProxyClient:
 
     BUF_SIZE = 1024  # The buffer size for receiving data from the server
 
-    def __init__(self, url):
-        self.url = url
+    def __init__(self, url, headers=""):
+        self.host = urlparse(url).hostname
+        self.port = self.get_port_from_url(url)
+        self.path = urlparse(url).path
+        self.headers = headers
 
-    def create_client_socket(self):
+    def get_port_from_url(self, url):
         """
-        Create and configure the client socket.
+        Get the port from the URL.
 
         Returns:
-            socket.socket: The created client socket.
+            int: Port number specified in the URL or the default HTTP port, 80.
         """
-        host = urlparse(self.url).hostname
-        port = self.get_port_from_url()
-        client_socket = socket(AF_INET, SOCK_STREAM)
-        client_socket.connect((host, port))
-        return client_socket
+        DEFAULT_HTTP_PORT = 80
+        port = urlparse(url).port
+        if port:
+            return port
+        return DEFAULT_HTTP_PORT
 
     def create_http_request_to_server(self):
         """
@@ -56,16 +59,20 @@ class ProxyClient:
         Returns:
             str: The HTTP request message.
         """
-        path = urlparse(self.url).path
-        host = urlparse(self.url).hostname
-        return (
+        request_msg = (
             "GET {} HTTP/1.1\r\n"
             "Host: {}\r\n"
             "Connection: close\r\n"
-            "\r\n".format(path, host)
+            .format(self.path, self.host)
         )
+        if self.headers:
+            request_msg += self.headers
+        request_msg += "\r\n"
 
-    def receive_http_response(self):
+        return request_msg
+
+
+    def receive_http_response(self, client_socket):
         """
         Receive an HTTP response from the origin server, accumulating both 
         headers and body.
@@ -81,14 +88,16 @@ class ProxyClient:
         headers_received = False
 
         while True:
-            chunk = self.client_socket.recv(self.BUF_SIZE)
+            chunk = client_socket.recv(self.BUF_SIZE)
             if not chunk:
                 break
 
             received_data += chunk
 
             if len(received_data) >= MAX_RESPONSE_SIZE:
-                raise Exception("HTTP response exceeds the maximum allowed size")
+                raise Exception(
+                    "HTTP response exceeds the maximum allowed size"
+                    )
 
             if b"\r\n\r\n" in received_data:
                 headers_received = True
@@ -98,19 +107,6 @@ class ProxyClient:
 
         return received_data
 
-    def get_port_from_url(self):
-        """
-        Get the port from the URL.
-
-        Returns:
-            int: Port number specified in the URL or the default HTTP port, 80.
-        """
-        DEFAULT_HTTP_PORT = 80
-        port = urlparse(self.url).port
-        if port:
-            return port
-        return DEFAULT_HTTP_PORT
-
     def get_and_process_server_msg(self):
         """
         Get and process the HTTP response from the origin server based on the 
@@ -119,19 +115,20 @@ class ProxyClient:
         Returns:
             str: The HTTP response message to send back to the client.
         """
-        self.client_socket = self.create_client_socket()
-        msg_to_server = self.create_http_request_to_server(self.url)
+        client_socket = socket(AF_INET, SOCK_STREAM)
+        client_socket.connect((self.host, self.port))
+        msg_to_server = self.create_http_request_to_server()
         print(
             "Sending the following message from proxy to"
             " server:\r\n",
             msg_to_server,
         )
-        self.client_socket.send(msg_to_server.encode())
+        client_socket.send(msg_to_server.encode())
 
         # Receive and process the response from the origin server
-        server_msg = self.receive_http_response().decode()
+        server_msg = self.receive_http_response(client_socket).decode()
 
-        self.client_socket.close()
+        client_socket.close()
 
         return server_msg
 
@@ -151,7 +148,7 @@ class ProxyServer:
     proxy_server.run()
     ```
     """
-    BUF_SIZE = 1024  # The buffer size for receiving data from clients and from 
+    BUF_SIZE = 1024  # The buffer size for receiving data from clients and from
                      # server
 
     def __init__(self, port):
@@ -235,7 +232,7 @@ class ProxyServer:
         Returns:
             bool: True if the message length is valid, False otherwise.
         """
-        return len(msg.split()) == 3
+        return len(msg.split()) >= 3
 
     def parse_http_request(self, msg):
         """
@@ -251,7 +248,11 @@ class ProxyServer:
         method = msg_components[0]
         url = msg_components[1]
         version = msg_components[2]
-        return method, url, version
+        try: 
+            headers = msg_components[3]
+        except:
+            headers = ""
+        return method, url, version, headers
 
     def is_valid_http_version(self, version):
         """
@@ -427,7 +428,9 @@ class ProxyServer:
                 # Handle an invalid client message length
                 server_msg = "Message length incorrect. Should be 3."
             else:
-                method, url, version = self.parse_http_request(client_msg)
+                method, url, version, headers = self.parse_http_request(
+                    client_msg
+                    )
                 if not self.is_http_get_method(method):
                     # Handle an invalid HTTP method
                     server_msg = "Method incorrect. Should be GET."
@@ -452,7 +455,7 @@ class ProxyServer:
                     )
                     # Use the ProxyClient class to handle communication with the
                     # origin server
-                    proxy_client = ProxyClient(url)
+                    proxy_client = ProxyClient(url, headers)
                     server_msg = proxy_client.get_and_process_server_msg()
                     server_msg = self.process_http_response_from_server(
                         url, server_msg
