@@ -1,6 +1,24 @@
 """
 Author: Cecilia Garcia Lopez de Munain
 Version: 1.0
+
+This script defines two classes, ProxyClient and ProxyServer, for a basic HTTP 
+proxy server.
+
+ProxyClient handles communication with the origin server, generating requests, 
+getting and accumulating responses.
+
+ProxyServer manages client connections, serving cached responses or forwarding 
+requests to the origin server through a ProxyClient and caching valid responses. 
+
+Usage:
+The main entry of the program it accepts a port number via the command line for 
+server configuration. It instantiates and runs a proxy server, executing it with
+the desired port number:
+```
+python proxy.py port_number
+```
+where 'port_number' is the port for the proxy server.
 """
 
 from socket import *
@@ -93,32 +111,10 @@ class ProxyClient:
             return port
         return DEFAULT_HTTP_PORT
 
-    def create_http_request_to_server(self, url):
-        """
-        Create an HTTP request message to be sent to the origin server.
-
-        Args:
-            url (str): The URL.
-
-        Returns:
-            str: The HTTP request message.
-        """
-        path = urlparse(url).path
-        host = urlparse(url).hostname
-        return (
-            "GET {} HTTP/1.1\r\n"
-            "Host: {}\r\n"
-            "Connection: close\r\n"
-            "\r\n".format(path, host)
-        )
-
     def get_and_process_server_msg(self):
         """
         Get and process the HTTP response from the origin server based on the 
         client request.
-
-        Args:
-            client_msg (str): The HTTP request message from the client.
 
         Returns:
             str: The HTTP response message to send back to the client.
@@ -143,7 +139,17 @@ class ProxyClient:
 class ProxyServer:
     """
     ProxyServer is a simple HTTP proxy server that handles client requests and 
-    caches responses
+    caches responses.
+
+    The proxy server listens for incoming client connections, receives
+    and processes client requests, communicates with the origin server or
+    the cache, and sends the appropriate responses back to the clients.
+
+    Usage:
+    ```
+    proxy_server = ProxyServer(port_number)
+    proxy_server.run()
+    ```
     """
     BUF_SIZE = 1024  # The buffer size for receiving data from clients and from 
                      # server
@@ -273,7 +279,7 @@ class ProxyServer:
     
     def is_http_url_valid(self, url):
         """
-        Check if URL is valid.
+        Check if the URL is well-formed (correctly structured).
 
         Args:
             url (str): The URL.
@@ -393,6 +399,12 @@ class ProxyServer:
     def run(self):
         """
         Run the proxy server to handle client requests.
+
+        The method continuously listens for client connections and serves
+        multiple clients concurrently.
+
+        This method does not return and runs indefinitely until manually
+        terminated.
         """
         while True:
             print(
