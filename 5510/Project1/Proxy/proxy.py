@@ -144,6 +144,13 @@ class ProxyServer:
             bool: True if the method is GET, False otherwise.
         """
         return method == "GET"
+    
+    def is_http_url_valid(self, url):
+        try:
+            result = urlparse(url)
+            return all([result.scheme, result.netloc])
+        except:
+            return False
 
     def get_cache_file_path(self, url):
         """
@@ -287,6 +294,9 @@ class ProxyServer:
             if not self.is_http_get_method(method):
                 # Handle an invalid HTTP method
                 server_msg = "Method incorrect. Should be GET."
+            if not self.is_http_url_valid(url):
+                # Handle an invalid HTTP method
+                server_msg = "Invalid URL."
             elif not self.is_valid_http_version(version):
                 # Handle an invalid HTTP version
                 server_msg = "HTTP version incorrect. Should be HTTP/1.1."
