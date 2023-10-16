@@ -328,6 +328,31 @@ class ProxyServer:
         # Handle unexpected response
         return "HTTP/1.1 500 Internal Server Error\r\nCache Hit: 0"
 
+    def validate_client_request(self, client_msg):
+        """
+        Validate the client's HTTP request and return corresponding response 
+        if error found. Otherwise, None.
+
+        :param str client_msg: The client's HTTP request message.
+        :return: The server's response message.
+        :rtype: str
+        """
+        if not self.is_valid_http_message_length(client_msg):
+            return "Message length incorrect. Should be >= 3."
+
+        method, url, version, _ = self.parse_http_request(client_msg)
+
+        if not self.is_http_get_method(method):
+            return "Method incorrect. Should be GET."
+
+        if not self.is_http_url_valid(url):
+            return "Invalid URL."
+
+        if not self.is_valid_http_version(version):
+            return "HTTP version incorrect. Should be HTTP/1.1."
+
+        return None  # No validation issues found
+
     def run(self):
         """
         Run the proxy server to handle client requests.
@@ -343,7 +368,7 @@ class ProxyServer:
                 "\r\n\r\n\r\n****************************** Ready to serve..."
                 " ******************************"
             )
-            conn_socket, addr = self.server_socket.accept()
+            conn_socket, _ = self.server_socket.accept()
             client_ip, client_port = conn_socket.getpeername()
             print(
                 "Received a client connection from: ('{}', {})".format(
@@ -355,23 +380,16 @@ class ProxyServer:
 
             # Get and process the server response based on the client request
             client_msg = client_msg.decode()
-            if not self.is_valid_http_message_length(client_msg):
-                # Handle an invalid client message length
-                server_msg = "Message length incorrect. Should be >= 3."
+
+            validation_result = self.validate_client_request(client_msg)
+            if validation_result is not None:
+                # Handle validation issues
+                server_msg = validation_result
             else:
-                method, url, version, headers = self.parse_http_request(
+                _, url, _, headers = self.parse_http_request(
                     client_msg
                     )
-                if not self.is_http_get_method(method):
-                    # Handle an invalid HTTP method
-                    server_msg = "Method incorrect. Should be GET."
-                elif not self.is_http_url_valid(url):
-                    # Handle an invalid HTTP method
-                    server_msg = "Invalid URL."
-                elif not self.is_valid_http_version(version):
-                    # Handle an invalid HTTP version
-                    server_msg = "HTTP version incorrect. Should be HTTP/1.1."
-                elif self.cache_exists(url) and not headers:
+                if self.cache_exists(url) and not headers:
                     # Serve from cache if the requested file is present
                     print(
                         "Yeah! The requested file is in the cache and is"
@@ -390,7 +408,7 @@ class ProxyServer:
                     server_msg = proxy_client.get_and_process_server_msg()
                     server_msg = self.process_http_response_from_server(
                         url, server_msg
-                    )
+                        )
 
                     print("Now responding to the client...")
 
