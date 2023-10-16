@@ -8,11 +8,142 @@ from urllib.parse import urlparse
 import sys
 from pathlib import Path
 
+class ProxyClient:
+    """
+    ProxyClient is responsible for handling communication with the origin server
+    """
+
+    BUF_SIZE = 1024  # The buffer size for receiving data from the server
+
+    def __init__(self, url):
+        self.url = url
+
+    def create_client_socket(self):
+        """
+        Create and configure the client socket.
+
+        Returns:
+            socket.socket: The created client socket.
+        """
+        host = urlparse(self.url).hostname
+        port = self.get_port_from_url()
+        client_socket = socket(AF_INET, SOCK_STREAM)
+        client_socket.connect((host, port))
+        return client_socket
+
+    def create_http_request_to_server(self):
+        """
+        Create an HTTP request message to be sent to the origin server.
+
+        Returns:
+            str: The HTTP request message.
+        """
+        path = urlparse(self.url).path
+        host = urlparse(self.url).hostname
+        return (
+            "GET {} HTTP/1.1\r\n"
+            "Host: {}\r\n"
+            "Connection: close\r\n"
+            "\r\n".format(path, host)
+        )
+
+    def receive_http_response(self):
+        """
+        Receive an HTTP response from the origin server, accumulating both 
+        headers and body.
+
+        Returns:
+            bytes: The accumulated HTTP response data.
+
+        Raises:
+            Exception: If the HTTP response exceeds the maximum allowed size.
+        """
+        MAX_RESPONSE_SIZE = 16 * 1024 * 1024  # 16MB
+        received_data = b""
+        headers_received = False
+
+        while True:
+            chunk = self.client_socket.recv(self.BUF_SIZE)
+            if not chunk:
+                break
+
+            received_data += chunk
+
+            if len(received_data) >= MAX_RESPONSE_SIZE:
+                raise Exception("HTTP response exceeds the maximum allowed size")
+
+            if b"\r\n\r\n" in received_data:
+                headers_received = True
+
+            if headers_received:
+                continue
+
+        return received_data
+
+    def get_port_from_url(self):
+        """
+        Get the port from the URL.
+
+        Returns:
+            int: Port number specified in the URL or the default HTTP port, 80.
+        """
+        DEFAULT_HTTP_PORT = 80
+        port = urlparse(self.url).port
+        if port:
+            return port
+        return DEFAULT_HTTP_PORT
+
+    def create_http_request_to_server(self, url):
+        """
+        Create an HTTP request message to be sent to the origin server.
+
+        Args:
+            url (str): The URL.
+
+        Returns:
+            str: The HTTP request message.
+        """
+        path = urlparse(url).path
+        host = urlparse(url).hostname
+        return (
+            "GET {} HTTP/1.1\r\n"
+            "Host: {}\r\n"
+            "Connection: close\r\n"
+            "\r\n".format(path, host)
+        )
+
+    def get_and_process_server_msg(self):
+        """
+        Get and process the HTTP response from the origin server based on the 
+        client request.
+
+        Args:
+            client_msg (str): The HTTP request message from the client.
+
+        Returns:
+            str: The HTTP response message to send back to the client.
+        """
+        self.client_socket = self.create_client_socket()
+        msg_to_server = self.create_http_request_to_server(self.url)
+        print(
+            "Sending the following message from proxy to"
+            " server:\r\n",
+            msg_to_server,
+        )
+        self.client_socket.send(msg_to_server.encode())
+
+        # Receive and process the response from the origin server
+        server_msg = self.receive_http_response().decode()
+
+        self.client_socket.close()
+
+        return server_msg
+
 
 class ProxyServer:
     """
     ProxyServer is a simple HTTP proxy server that handles client requests and 
-    caches responses.
+    caches responses
     """
     BUF_SIZE = 1024  # The buffer size for receiving data from clients and from 
                      # server
@@ -24,9 +155,7 @@ class ProxyServer:
         Args:
             port (int): Port number for the proxy server.
         """
-        self.server_socket = self.create_server_socket(
-            port
-        )  # The server socket used for sending messages from client
+        self.server_socket = self.create_server_socket(port)
 
     def create_server_socket(self, port):
         """
@@ -209,42 +338,6 @@ class ProxyServer:
         path.parent.mkdir(parents = True, exist_ok = True)
         path.write_text(msg)
 
-    def get_port_from_url(self, url):
-        """
-        Get port from a given URL.
-
-        Args:
-            url (str): The URL.
-        
-        Returns:
-            str: Port number specified in URL or the default HTTP port, 80.
-        """
-        DEFAULT_HTTP_PORT = 80  # The port used for connecting to the origin 
-                                  # server (usually port 80 for HTTP)
-        port = urlparse(url).port
-        if port:
-            return port
-        return DEFAULT_HTTP_PORT
-
-    def create_http_request_to_server(self, url):
-        """
-        Create an HTTP request message to be sent to the origin server.
-
-        Args:
-            url (str): The URL.
-
-        Returns:
-            str: The HTTP request message.
-        """
-        path = urlparse(url).path
-        host = urlparse(url).hostname
-        return (
-            "GET {} HTTP/1.1\r\n"
-            "Host: {}\r\n"
-            "Connection: close\r\n"
-            "\r\n".format(path, host)
-        )
-
     def get_http_response_status(self, msg):
         """
         Get the HTTP response status code.
@@ -297,72 +390,6 @@ class ProxyServer:
         # Handle unexpected response
         return "HTTP/1.1 500 Internal Server Error\r\nCache Hit: 0\r\n\r\n"
 
-    def get_and_process_server_msg(self, client_msg):
-        """
-        Get and process the HTTP response from the origin server based on the 
-        client request.
-
-        Args:
-            client_msg (str): The HTTP request message from the client.
-
-        Returns:
-            str: The HTTP response message to send back to the client.
-        """
-        client_msg = client_msg.decode()
-        if not self.is_valid_http_message_length(client_msg):
-            # Handle an invalid client message length
-            server_msg = "Message length incorrect. Should be 3."
-        else:
-            method, url, version = self.parse_http_request(client_msg)
-            if not self.is_http_get_method(method):
-                # Handle an invalid HTTP method
-                server_msg = "Method incorrect. Should be GET."
-            elif not self.is_http_url_valid(url):
-                # Handle an invalid HTTP method
-                server_msg = "Invalid URL.-"
-            elif not self.is_valid_http_version(version):
-                # Handle an invalid HTTP version
-                server_msg = "HTTP version incorrect. Should be HTTP/1.1."
-            else:
-                if self.cache_exists(url):
-                    # Serve from cache if the requested file is present
-                    print(
-                        "Yeah! The requested file is in the cache and is" 
-                        " about to be sent to the client!"
-                    )
-                    server_msg = self.read_cache_file_contents(url)
-                else:
-                    # Request the file from the origin server
-                    print(
-                        "Oops! No cache hit! Requesting origin server for" 
-                        " the file..."
-                    )
-                    port = self.get_port_from_url(url)
-                    client_socket = socket(AF_INET, SOCK_STREAM)
-                    msg_to_server = self.create_http_request_to_server(url)
-                    client_socket.connect(
-                        (urlparse(url).hostname, port)
-                        )
-                    print(
-                        "Sending the following message from proxy to"
-                        " server:\r\n",
-                        msg_to_server,
-                    )
-                    client_socket.send(msg_to_server.encode())
-
-                    # Receive and process the response from the origin server
-                    server_msg = self.receive_http_response(
-                        client_socket
-                        ).decode()
-                    server_msg = self.process_http_response_from_server(
-                        url, server_msg
-                        )
-
-                    client_socket.close()
-                    print("Now responding to the client...")
-
-        return server_msg
-
     def run(self):
         """
         Run the proxy server to handle client requests.
@@ -383,13 +410,48 @@ class ProxyServer:
             print("Received a message from this client: {}".format(client_msg))
 
             # Get and process the server response based on the client request
-            server_msg = self.get_and_process_server_msg(client_msg)
+            client_msg = client_msg.decode()
+            if not self.is_valid_http_message_length(client_msg):
+                # Handle an invalid client message length
+                server_msg = "Message length incorrect. Should be 3."
+            else:
+                method, url, version = self.parse_http_request(client_msg)
+                if not self.is_http_get_method(method):
+                    # Handle an invalid HTTP method
+                    server_msg = "Method incorrect. Should be GET."
+                elif not self.is_http_url_valid(url):
+                    # Handle an invalid HTTP method
+                    server_msg = "Invalid URL."
+                elif not self.is_valid_http_version(version):
+                    # Handle an invalid HTTP version
+                    server_msg = "HTTP version incorrect. Should be HTTP/1.1."
+                elif self.cache_exists(url):
+                    # Serve from cache if the requested file is present
+                    print(
+                        "Yeah! The requested file is in the cache and is" 
+                        " about to be sent to the client!"
+                    )
+                    server_msg = self.read_cache_file_contents(url)
+                else:
+                    # Request the file from the origin server
+                    print(
+                        "Oops! No cache hit! Requesting origin server for" 
+                        " the file..."
+                    )
+                    # Use the ProxyClient class to handle communication with the
+                    # origin server
+                    proxy_client = ProxyClient(url)
+                    server_msg = proxy_client.get_and_process_server_msg()
+                    server_msg = self.process_http_response_from_server(
+                        url, server_msg
+                        )
+
+                    print("Now responding to the client...")
 
             # Send the response to the client
             conn_socket.send(server_msg.encode())
             conn_socket.close()
             print("All done! Closing socket...")
-
 
 if __name__ == "__main__":
     if len(sys.argv) <= 1:
