@@ -101,7 +101,6 @@ class ProxyClient:
         """
         MAX_RESPONSE_SIZE = 16 * 1024 * 1024  # 16MB
         received_data = b""
-        headers_received = False
 
         while True:
             chunk = client_socket.recv(self.BUF_SIZE)
@@ -114,12 +113,6 @@ class ProxyClient:
                 raise Exception(
                     "HTTP response exceeds the maximum allowed size"
                     )
-
-            if b"\r\n\r\n" in received_data:
-                headers_received = True
-
-            if headers_received:
-                continue
 
         return received_data
 
@@ -194,49 +187,6 @@ class ProxyServer:
             return server_socket
         except socket.error as err:
             raise Exception("Socket creation failed with error %s".format(err))
-
-    def receive_http_response(self, socket):
-        """
-        Receive an HTTP response from a socket, accumulating both headers and 
-        body.
-
-        Args:
-            socket (socket.socket): The socket connected to the server.
-
-        Returns:
-            bytes: The accumulated HTTP response data.
-
-        Raises:
-            Exception: If the HTTP response exceeds the maximum allowed size.
-        """
-        MAX_RESPONSE_SIZE = 16 * 1024 * 1024  # 16MB
-        received_data = b""  # Initialize an empty bytes object to store the 
-                             # received data
-        headers_received = False  # Flag to indicate if headers have been 
-                                  # received
-
-        while True:
-            chunk = socket.recv(1024)  # Receive data in 1024-byte chunks
-            if not chunk:
-                break  # If no more data is received, exit the loop
-
-            received_data += chunk  # Concatenate the received data
-
-            # Check if we have received the entire HTTP response
-            if len(received_data) >= MAX_RESPONSE_SIZE:
-                raise Exception(
-                    "HTTP response exceeds the maximum allowed size"
-                    )
-
-            # Check if we've reached the end of the headers
-            if b"\r\n\r\n" in received_data:
-                headers_received = True
-
-            # If headers have been received, continue accumulating data
-            if headers_received:
-                continue
-
-        return received_data
 
     def is_valid_http_message_length(self, msg):
         """
