@@ -29,7 +29,8 @@ from pathlib import Path
 
 class ProxyClient:
     """
-    ProxyClient is responsible for handling communication with the origin server
+    ProxyClient is responsible for handling communication with the origin 
+    server.
     """
 
     BUF_SIZE = 1024  # The buffer size for receiving data from the server
@@ -38,10 +39,9 @@ class ProxyClient:
         """
         Initialize a ProxyClient instance.
 
-        Args:
-            url (str): The URL of the origin server.
-            headers (str, optional): Additional HTTP headers to include in the 
-            request.
+        :param str url: The URL of the origin server.
+        :param str headers: (Optional) Additional HTTP headers to include in 
+        the request.
         """
         self.host = urlparse(url).hostname
         self.port = self.get_port_from_url(url)
@@ -52,11 +52,9 @@ class ProxyClient:
         """
         Get the port from the URL.
 
-        Args:
-            url (str): The URL of the origin server.
-
-        Returns:
-            int: Port number specified in the URL or the default HTTP port, 80.
+        :param str url: The URL of the origin server.
+        :return: Port number specified in the URL or the default HTTP port, 80.
+        :rtype: int
         """
         DEFAULT_HTTP_PORT = 80
         port = urlparse(url).port
@@ -68,8 +66,8 @@ class ProxyClient:
         """
         Create an HTTP request message to be sent to the origin server.
 
-        Returns:
-            str: The HTTP request message.
+        :return: The HTTP request message.
+        :rtype: str
         """
         request_msg = (
             "GET {} HTTP/1.1\r\n"
@@ -83,21 +81,17 @@ class ProxyClient:
 
         return request_msg
 
-
     def receive_http_response(self, client_socket):
         """
         Receive an HTTP response from the origin server, accumulating both 
         headers and body.
 
-        Args:
-            client_socket (socket.socket): The socket connected to the origin 
-            server.
-
-        Returns:
-            bytes: The accumulated HTTP response data.
-
-        Raises:
-            Exception: If the HTTP response exceeds the maximum allowed size.
+        :param client_socket: The socket connected to the origin server.
+        :type client_socket: socket.socket
+        :return: The accumulated HTTP response data.
+        :rtype: bytes
+        :raises Exception: If the HTTP response exceeds the maximum allowed 
+        size.
         """
         MAX_RESPONSE_SIZE = 16 * 1024 * 1024  # 16MB
         received_data = b""
@@ -112,7 +106,7 @@ class ProxyClient:
             if len(received_data) >= MAX_RESPONSE_SIZE:
                 raise Exception(
                     "HTTP response exceeds the maximum allowed size"
-                    )
+                )
 
         return received_data
 
@@ -121,8 +115,8 @@ class ProxyClient:
         Get and process the HTTP response from the origin server based on the 
         client request.
 
-        Returns:
-            str: The HTTP response message to send back to the client.
+        :return: The HTTP response message to send back to the client.
+        :rtype: str
         """
         client_socket = socket(AF_INET, SOCK_STREAM)
         client_socket.connect((self.host, self.port))
@@ -141,48 +135,37 @@ class ProxyClient:
 
         return server_msg
 
-
 class ProxyServer:
     """
-    ProxyServer is a simple HTTP proxy server that handles client requests and 
+    ProxyServer is a simple HTTP proxy server that handles client requests and
     caches responses.
-
-    The proxy server listens for incoming client connections, receives
-    and processes client requests, communicates with the origin server or
-    the cache, and sends the appropriate responses back to the clients.
-
-    Usage:
-    ```
-    proxy_server = ProxyServer(port_number)
-    proxy_server.run()
-    ```
     """
-    BUF_SIZE = 1024  # The buffer size for receiving data from clients and from
-                     # server
+
+    BUF_SIZE = 1024  # The buffer size for receiving data from clients and 
+                     # from server
 
     def __init__(self, port):
         """
         Initialize the ProxyServer with the given port number.
 
-        Args:
-            port (int): Port number for the proxy server.
+        :param int port: Port number for the proxy server.
         """
-        self.server_socket = self.create_server_socket(port)
+        self.port = port
+        self.server_socket = self.create_server_socket()
 
-    def create_server_socket(self, port):
+    def create_server_socket(self):
         """
         Create and configure the server socket.
 
-        Args:
-            port (int): Port number for the server socket.
-
-        Returns:
-            socket.socket: The created server socket.
+        :param int port: Port number for the server socket.
+        :return: The created server socket.
+        :rtype: socket.socket
+        :raises Exception: If socket creation fails.
         """
         try:
             server_socket = socket(AF_INET, SOCK_STREAM)
             server_socket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
-            server_socket.bind(("", port))
+            server_socket.bind(("", self.port))
             server_socket.listen()
             return server_socket
         except socket.error as err:
@@ -192,29 +175,27 @@ class ProxyServer:
         """
         Check if the length of the received message is valid (should be 3).
 
-        Args:
-            msg (str): The received message.
-
-        Returns:
-            bool: True if the message length is valid, False otherwise.
+        :param str msg: The received message.
+        :return: True if the message length is valid, False otherwise.
+        :rtype: bool
         """
+
         return len(msg.split()) >= 3
 
     def parse_http_request(self, msg):
         """
         Parse an HTTP message into its components.
 
-        Args:
-            msg (str): The HTTP message.
-
-        Returns:
-            tuple: A tuple containing the method, URL, and version.
+        :param str msg: The HTTP message.
+        :return: A tuple containing the method, URL, version, and headers.
+        :rtype: tuple
         """
+
         msg_components = msg.split()
         method = msg_components[0]
         url = msg_components[1]
         version = msg_components[2]
-        try: 
+        try:
             headers = " ".join(msg_components[3:])
         except:
             headers = ""
@@ -224,11 +205,9 @@ class ProxyServer:
         """
         Check if the HTTP version is correct (should be 'HTTP/1.1').
 
-        Args:
-            version (str): The HTTP version.
-
-        Returns:
-            bool: True if the version is correct, False otherwise.
+        :param str version: The HTTP version.
+        :return: True if the version is correct, False otherwise.
+        :rtype: bool
         """
         return version == "HTTP/1.1"
 
@@ -236,23 +215,20 @@ class ProxyServer:
         """
         Check if the HTTP method is GET.
 
-        Args:
-            method (str): The HTTP method.
-
-        Returns:
-            bool: True if the method is GET, False otherwise.
+        :param str method: The HTTP method.
+        :return: True if the method is GET, False otherwise.
+        :rtype: bool
         """
+
         return method == "GET"
-    
+
     def is_http_url_valid(self, url):
         """
         Check if the URL is well-formed (correctly structured).
 
-        Args:
-            url (str): The URL.
-
-        Returns:
-            bool: True if URL is valid, False otherwise.
+        :param str url: The URL.
+        :return: True if URL is valid, False otherwise.
+        :rtype: bool
         """
         try:
             result = urlparse(url)
@@ -264,11 +240,9 @@ class ProxyServer:
         """
         Get the cache file path for a given URL.
 
-        Args:
-            url (str): The URL.
-
-        Returns:
-            pathlib.Path: The cache file path.
+        :param str url: The URL.
+        :return: The cache file path.
+        :rtype: pathlib.Path
         """
         parsed_url = urlparse(url)
         return Path("./cache/" + parsed_url.hostname + parsed_url.path)
@@ -277,11 +251,9 @@ class ProxyServer:
         """
         Check if a cache file exists for a given URL.
 
-        Args:
-            url (str): The URL.
-
-        Returns:
-            bool: True if a cache file exists, False otherwise.
+        :param str url: The URL.
+        :return: True if a cache file exists, False otherwise.
+        :rtype: bool
         """
         return self.get_cache_file_path(url).exists()
 
@@ -289,11 +261,9 @@ class ProxyServer:
         """
         Read the contents of a cache file for a given URL.
 
-        Args:
-            url (str): The URL.
-
-        Returns:
-            str: The contents of the cache file.
+        :param str url: The URL.
+        :return: The contents of the cache file.
+        :rtype: str
         """
         path = self.get_cache_file_path(url)
         file = path.open()
@@ -303,23 +273,20 @@ class ProxyServer:
         """
         Write an HTTP response to a cache file for a given URL.
 
-        Args:
-            url (str): The URL.
-            msg (str): The HTTP response message.
+        :param str url: The URL.
+        :param str msg: The HTTP response message.
         """
         path = self.get_cache_file_path(url)
-        path.parent.mkdir(parents = True, exist_ok = True)
+        path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(msg)
 
     def get_http_response_status(self, msg):
         """
         Get the HTTP response status code.
 
-        Args:
-            msg (str): The HTTP response message.
-
-        Returns:
-            str: The HTTP response status code.
+        :param str msg: The HTTP response message.
+        :return: The HTTP response status code.
+        :rtype: str
         """
         try:
             version, status, reason = msg.split(None, 2)
@@ -331,12 +298,10 @@ class ProxyServer:
         """
         Process the HTTP response message from the origin server.
 
-        Args:
-            url (str): The URL.
-            msg (str): The HTTP response message.
-
-        Returns:
-            str: The processed HTTP response message.
+        :param str url: The URL.
+        :param str msg: The HTTP response message.
+        :return: The processed HTTP response message.
+        :rtype: str
         """
         version = self.get_http_response_status(msg)
 
@@ -367,10 +332,10 @@ class ProxyServer:
         """
         Run the proxy server to handle client requests.
 
-        The method continuously listens for client connections and serves
+        The method continuously listens for client connections and serves 
         multiple clients concurrently.
 
-        This method does not return and runs indefinitely until manually
+        This method does not return and runs indefinitely until manually 
         terminated.
         """
         while True:
@@ -409,14 +374,14 @@ class ProxyServer:
                 elif self.cache_exists(url) and not headers:
                     # Serve from cache if the requested file is present
                     print(
-                        "Yeah! The requested file is in the cache and is" 
+                        "Yeah! The requested file is in the cache and is"
                         " about to be sent to the client!"
                     )
                     server_msg = self.read_cache_file_contents(url)
                 else:
                     # Request the file from the origin server
                     print(
-                        "Oops! No cache hit! Requesting origin server for" 
+                        "Oops! No cache hit! Requesting origin server for"
                         " the file..."
                     )
                     # Use the ProxyClient class to handle communication with the
@@ -425,7 +390,7 @@ class ProxyServer:
                     server_msg = proxy_client.get_and_process_server_msg()
                     server_msg = self.process_http_response_from_server(
                         url, server_msg
-                        )
+                    )
 
                     print("Now responding to the client...")
 
