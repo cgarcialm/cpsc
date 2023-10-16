@@ -147,6 +147,9 @@ class ProxyServer:
     proxy_server = ProxyServer(port_number)
     proxy_server.run()
     ```
+
+    Args:
+        port (int): Port number for the proxy server.
     """
     BUF_SIZE = 1024  # The buffer size for receiving data from clients and from
                      # server
