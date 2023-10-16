@@ -146,6 +146,15 @@ class ProxyServer:
         return method == "GET"
     
     def is_http_url_valid(self, url):
+        """
+        Check if URL is valid.
+
+        Args:
+            url (str): The URL.
+
+        Returns:
+            bool: True if URL is valid, False otherwise.
+        """
         try:
             result = urlparse(url)
             return all([result.scheme, result.netloc])
@@ -294,9 +303,9 @@ class ProxyServer:
             if not self.is_http_get_method(method):
                 # Handle an invalid HTTP method
                 server_msg = "Method incorrect. Should be GET."
-            if not self.is_http_url_valid(url):
+            elif not self.is_http_url_valid(url):
                 # Handle an invalid HTTP method
-                server_msg = "Invalid URL."
+                server_msg = "Invalid URL.-"
             elif not self.is_valid_http_version(version):
                 # Handle an invalid HTTP version
                 server_msg = "HTTP version incorrect. Should be HTTP/1.1."
