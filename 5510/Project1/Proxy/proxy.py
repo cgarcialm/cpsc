@@ -392,7 +392,7 @@ class ProxyServer:
 
         if len(msg) > 0 and version in ["200", "404"]:
             # Extract the response body after headers
-            msg = msg[msg.find("\r\n\r\n") :] + "\r\n\r\n"
+            msg = msg[msg.find("\r\n\r\n") :]
 
             if version == "200":
                 # Cache the response and modify cache headers for a 200 response
@@ -411,7 +411,7 @@ class ProxyServer:
             return msg
 
         # Handle unexpected response
-        return "HTTP/1.1 500 Internal Server Error\r\nCache Hit: 0\r\n\r\n"
+        return "HTTP/1.1 500 Internal Server Error\r\nCache Hit: 0"
 
     def run(self):
         """
@@ -442,7 +442,7 @@ class ProxyServer:
             client_msg = client_msg.decode()
             if not self.is_valid_http_message_length(client_msg):
                 # Handle an invalid client message length
-                server_msg = "Message length incorrect. Should be 3."
+                server_msg = "Message length incorrect. Should be >= 3."
             else:
                 method, url, version, headers = self.parse_http_request(
                     client_msg
@@ -480,6 +480,7 @@ class ProxyServer:
                     print("Now responding to the client...")
 
             # Send the response to the client
+            server_msg += "\r\n\r\n"
             conn_socket.send(server_msg.encode())
             conn_socket.close()
             print("All done! Closing socket...")
