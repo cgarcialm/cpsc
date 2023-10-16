@@ -12,9 +12,10 @@ ProxyServer manages client connections, serving cached responses or forwarding
 requests to the origin server through a ProxyClient and caching valid responses.
 
 Usage:
-The main entry of the program it accepts a port number via the command line for 
+The main entry of the program accepts a port number via the command line for 
 server configuration. It instantiates and runs a proxy server, executing it with
-the desired port number:
+the desired port number. Only if html not in cache, a proxy client is created
+to request the origin server:
 ```
 python proxy.py port_number
 ```
