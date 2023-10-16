@@ -34,6 +34,14 @@ class ProxyClient:
     BUF_SIZE = 1024  # The buffer size for receiving data from the server
 
     def __init__(self, url, headers=""):
+        """
+        Initialize a ProxyClient instance.
+
+        Args:
+            url (str): The URL of the origin server.
+            headers (str, optional): Additional HTTP headers to include in the 
+            request.
+        """
         self.host = urlparse(url).hostname
         self.port = self.get_port_from_url(url)
         self.path = urlparse(url).path
@@ -42,6 +50,9 @@ class ProxyClient:
     def get_port_from_url(self, url):
         """
         Get the port from the URL.
+
+        Args:
+            url (str): The URL of the origin server.
 
         Returns:
             int: Port number specified in the URL or the default HTTP port, 80.
@@ -76,6 +87,10 @@ class ProxyClient:
         """
         Receive an HTTP response from the origin server, accumulating both 
         headers and body.
+
+        Args:
+            client_socket (socket.socket): The socket connected to the origin 
+            server.
 
         Returns:
             bytes: The accumulated HTTP response data.
@@ -147,9 +162,6 @@ class ProxyServer:
     proxy_server = ProxyServer(port_number)
     proxy_server.run()
     ```
-
-    Args:
-        port (int): Port number for the proxy server.
     """
     BUF_SIZE = 1024  # The buffer size for receiving data from clients and from
                      # server
@@ -252,7 +264,7 @@ class ProxyServer:
         url = msg_components[1]
         version = msg_components[2]
         try: 
-            headers = msg_components[3]
+            headers = " ".join(msg_components[3:])
         except:
             headers = ""
         return method, url, version, headers
@@ -443,7 +455,7 @@ class ProxyServer:
                 elif not self.is_valid_http_version(version):
                     # Handle an invalid HTTP version
                     server_msg = "HTTP version incorrect. Should be HTTP/1.1."
-                elif self.cache_exists(url):
+                elif self.cache_exists(url) and not headers:
                     # Serve from cache if the requested file is present
                     print(
                         "Yeah! The requested file is in the cache and is" 
