@@ -422,7 +422,7 @@ if __name__ == "__main__":
     if len(sys.argv) <= 1:
         print(
             "Usage: \"python proxy.py port_number\"\r\n"
-            "[port_number]: It is the Port Number Of Proxy Server"
+            "[port_number]: It is the port number of proxy server"
         )
         sys.exit(2)
 
